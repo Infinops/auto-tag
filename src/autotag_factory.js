@@ -44,128 +44,128 @@ const AutotagFactory = {
     if (typeof matchingService === 'undefined'
       || enabledServices.indexOf(matchingService.name) < 0) {
       // Default: worker that does nothing
-      return new AutotagDefaultWorker(event, s3Region);
+      return new AutotagDefaultWorker(event, s3Region, matchingService.paid);
     }
 
     // Select the relevant worker
     switch (matchingService.name) {
       case CONFIG.EC2.name:
-        return new AutotagEC2Worker(event, s3Region);
+        return new AutotagEC2Worker(event, s3Region, matchingService.paid);
 
       case CONFIG.S3.name:
-        return new AutotagS3Worker(event, s3Region);
+        return new AutotagS3Worker(event, s3Region, matchingService.paid);
 
       case CONFIG.ELB.name:
-        return new AutotagELBWorker(event, s3Region);
+        return new AutotagELBWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.AUTOSCALE_GROUPS.name:
-        return new AutotagAutoscaleWorker(event, s3Region);
+        return new AutotagAutoscaleWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.VPC.name:
-        return new AutotagVPCWorker(event, s3Region);
+        return new AutotagVPCWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.SUBNETS.name:
-        return new AutotagSubnetWorker(event, s3Region);
+        return new AutotagSubnetWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.EBS.name:
-        return new AutotagEBSWorker(event, s3Region);
+        return new AutotagEBSWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.INTERNET_GATEWAY.name:
-        return new AutotagInternetGatewayWorker(event, s3Region);
+        return new AutotagInternetGatewayWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.RDS.name:
-        return new AutotagRDSWorker(event, s3Region);
+        return new AutotagRDSWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.EMR.name:
-        return new AutotagEMRWorker(event, s3Region);
+        return new AutotagEMRWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.DATA_PIPELINE.name:
-        return new AutotagDataPipelineWorker(event, s3Region);
+        return new AutotagDataPipelineWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.SECURITY_GROUP.name:
-        return new AutotagSecurityGroupWorker(event, s3Region);
+        return new AutotagSecurityGroupWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.AMI_CREATE.name:
-        return new AutotagAMIWorker(event, s3Region);
+        return new AutotagAMIWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.AMI_COPY.name:
-        return new AutotagAMIWorker(event, s3Region);
+        return new AutotagAMIWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.AMI_REGISTER.name:
-        return new AutotagAMIWorker(event, s3Region);
+        return new AutotagAMIWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.SNAPSHOT_CREATE.name:
-        return new AutotagSnapshotWorker(event, s3Region);
+        return new AutotagSnapshotWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.SNAPSHOT_COPY.name:
-        return new AutotagSnapshotWorker(event, s3Region);
+        return new AutotagSnapshotWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.SNAPSHOT_IMPORT.name:
-        return new AutotagSnapshotWorker(event, s3Region);
+        return new AutotagSnapshotWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.ELASTIC_IP.name:
-        return new AutotagEIPWorker(event, s3Region);
+        return new AutotagEIPWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.DYNAMO_DB.name:
-        return new AutotagDynamoDBWorker(event, s3Region);
+        return new AutotagDynamoDBWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.ENI.name:
-        return new AutotagENIWorker(event, s3Region);
+        return new AutotagENIWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.NAT_GATEWAY.name:
-        return new AutotagNATGatewayWorker(event, s3Region);
+        return new AutotagNATGatewayWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.NETWORK_ACL.name:
-        return new AutotagNetworkACLWorker(event, s3Region);
+        return new AutotagNetworkACLWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.ROUTE_TABLE.name:
-        return new AutotagRouteTableWorker(event, s3Region);
+        return new AutotagRouteTableWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.VPC_PEERING.name:
-        return new AutotagVPCPeeringWorker(event, s3Region);
+        return new AutotagVPCPeeringWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.VPN_CONNECTION.name:
-        return new AutotagVPNConnectionWorker(event, s3Region);
+        return new AutotagVPNConnectionWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.VPN_GATEWAY.name:
-        return new AutotagVPNGatewayWorker(event, s3Region);
+        return new AutotagVPNGatewayWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.OPS_WORKS.name:
-        return new AutotagOpsworksWorker(event, s3Region);
+        return new AutotagOpsworksWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.OPS_WORKS_CLONE.name:
-        return new AutotagOpsworksWorker(event, s3Region);
+        return new AutotagOpsworksWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.IAM_USER.name:
-        return new AutotagIAMUserWorker(event, s3Region);
+        return new AutotagIAMUserWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.IAM_ROLE.name:
-        return new AutotagIAMRoleWorker(event, s3Region);
+        return new AutotagIAMRoleWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.CUSTOMER_GATEWAY.name:
-        return new AutotagCustomerGatewayWorker(event, s3Region);
+        return new AutotagCustomerGatewayWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.DHCP_OPTIONS.name:
-        return new AutotagDhcpOptionsWorker(event, s3Region);
+        return new AutotagDhcpOptionsWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.LAMBDA_FUNCTION_2015.name:
-        return new AutotagLambdaFunctionWorker(event, s3Region);
+        return new AutotagLambdaFunctionWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.LAMBDA_FUNCTION_2014.name:
-        return new AutotagLambdaFunctionWorker(event, s3Region);
+        return new AutotagLambdaFunctionWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.CLOUDWATCH_ALARM.name:
-        return new AutotagCloudwatchAlarmWorker(event, s3Region);
+        return new AutotagCloudwatchAlarmWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.CLOUDWATCH_EVENTS_RULE.name:
-        return new AutotagCloudwatchEventsRuleWorker(event, s3Region);
+        return new AutotagCloudwatchEventsRuleWorker(event, s3Region, matchingService.paid);
 
       case CONFIG.CLOUDWATCH_LOG_GROUP.name:
-        return new AutotagCloudwatchLogGroupWorker(event, s3Region);
+        return new AutotagCloudwatchLogGroupWorker(event, s3Region, matchingService.paid);
 
       // Default: worker that does nothing
       default:
-        return new AutotagDefaultWorker(event, s3Region);
+        return new AutotagDefaultWorker(event, s3Region, matchingService.paid);
     }
   }
 };

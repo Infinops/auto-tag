@@ -1,7 +1,7 @@
 {
-  "name": "autotag",
-  "version": "1.0.0",
-  "description": "Autotagging for AWS resources",
+  "name": "autotag-infinops",
+  "version": "0.1.0",
+  "description": "Autotagging for AWS resources Infinops edition",
   "main": "autotag.js",
   "private": true,
   "dependencies": {
@@ -49,9 +49,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:GorillaStack/autotag.git"
+    "url": "git@github.com:Infinops/auto-tag.git"
   },
   "author": "Elliott Spira",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/gorillastack/autotag#readme"
+  "homepage": "https://github.com/Infinops/auto-tag#readme"
 }

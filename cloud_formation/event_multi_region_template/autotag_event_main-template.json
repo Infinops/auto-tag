@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Auto Tag (Open Source by GorillaStack)",
+  "Description": "Auto Tag (Open Source by Infinops)",
   "Parameters": {
     "LambdaName": {
       "Description": "The name of the Lambda Function.",
@@ -14,7 +14,7 @@
     "CodeS3Bucket": {
       "Description": "The name of the code bucket in S3.",
       "Type": "String",
-      "Default": "gorillastack-autotag-releases-ap-northeast-1"
+      "Default": "infinops-autotag-releases-ap-northeast-1"
     },
     "CodeS3Path": {
       "Description": "The path of the code zip file in the code bucket in S3.",
@@ -80,7 +80,7 @@
             "Ref": "CodeS3Path"
           }
         },
-        "Description": "Auto Tag (Open Source by GorillaStack)",
+        "Description": "Auto Tag (Open Source by Infinops)",
         "FunctionName": {
           "Fn::Sub": "${LambdaName}"
         },
@@ -174,7 +174,7 @@
             }
           ]
         },
-        "Path": "/gorillastack/autotag/execution/"
+        "Path": "/infinops/autotag/execution/"
       }
     },
     "AutoTagExecutionPolicy": {
@@ -207,7 +207,7 @@
               ],
               "Resource": [
                 {
-                  "Fn::Sub": "arn:aws:iam::*:role/gorillastack/autotag/master/${AWS::StackName}"
+                  "Fn::Sub": "arn:aws:iam::*:role/infinops/autotag/master/${AWS::StackName}"
                 }
               ]
             }
@@ -239,7 +239,7 @@
             }
           ]
         },
-        "Path": "/gorillastack/autotag/master/"
+        "Path": "/infinops/autotag/master/"
       }
     },
     "AutoTagMasterPolicy": {

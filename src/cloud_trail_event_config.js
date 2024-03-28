@@ -3,228 +3,266 @@ export default {
     name: 'ec2',
     targetEventName: 'RunInstances',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   S3: {
     name: 's3',
     targetEventName: 'CreateBucket',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   AUTOSCALE_GROUPS: {
     name: 'autoscaleGroups',
     targetEventName: 'CreateAutoScalingGroup',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   VPC: {
     name: 'vpc',
     targetEventName: 'CreateVpc',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: false,
   },
   SUBNETS: {
     name: 'subnets',
     targetEventName: 'CreateSubnet',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: false,
   },
   ELB: {
     name: 'elb',
     targetEventName: 'CreateLoadBalancer',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   EBS: {
     name: 'ebs',
     targetEventName: 'CreateVolume',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   INTERNET_GATEWAY: {
     name: 'internetGateway',
     targetEventName: 'CreateInternetGateway',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: false,
   },
   SECURITY_GROUP: {
     name: 'securityGroup',
     targetEventName: 'CreateSecurityGroup',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: false,
   },
   RDS: {
     name: 'rds',
     targetEventName: 'CreateDBInstance',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   EMR: {
     name: 'emr',
     targetEventName: 'RunJobFlow',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   DATA_PIPELINE: {
     name: 'dataPipeline',
     targetEventName: 'CreatePipeline',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   AMI_CREATE: {
     name: 'ami',
     targetEventName: 'CreateImage',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   AMI_COPY: {
     name: 'ami',
     targetEventName: 'CopyImage',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   AMI_REGISTER: {
     name: 'ami',
     targetEventName: 'RegisterImage',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   SNAPSHOT_CREATE: {
     name: 'snapshot',
     targetEventName: 'CreateSnapshot',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   SNAPSHOT_COPY: {
     name: 'snapshot',
     targetEventName: 'CopySnapshot',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   SNAPSHOT_IMPORT: {
     name: 'snapshot',
     targetEventName: 'ImportSnapshot',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   ELASTIC_IP: {
     name: 'elasticIP',
     targetEventName: 'AllocateAddress',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   DYNAMO_DB: {
     name: 'dynamoDB',
     targetEventName: 'CreateTable',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   ENI: {
     name: 'eni',
     targetEventName: 'CreateNetworkInterface',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: false,
   },
   NAT_GATEWAY: {
     name: 'natGateway',
     targetEventName: 'CreateNatGateway',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: false,
   },
   NETWORK_ACL: {
     name: 'networkACL',
     targetEventName: 'CreateNetworkAcl',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: false,
   },
   ROUTE_TABLE: {
     name: 'routeTable',
     targetEventName: 'CreateRouteTable',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: false,
   },
   VPC_PEERING: {
     name: 'vpcPeering',
     targetEventName: 'CreateVpcPeeringConnection',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   VPN_CONNECTION: {
     name: 'vpnConnection',
     targetEventName: 'CreateVpnConnection',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   VPN_GATEWAY: {
     name: 'vpnGateway',
     targetEventName: 'CreateVpnGateway',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   OPS_WORKS: {
     name: 'opsWorks',
     targetEventName: 'CreateStack',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   OPS_WORKS_CLONE: {
     name: 'opsWorks',
     targetEventName: 'CloneStack',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   IAM_USER: {
     name: 'iamUser',
     targetEventName: 'CreateUser',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: false,
   },
   IAM_ROLE: {
     name: 'iamRole',
     targetEventName: 'CreateRole',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: false,
   },
   CUSTOMER_GATEWAY: {
     name: 'customerGateway',
     targetEventName: 'CreateCustomerGateway',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   DHCP_OPTIONS: {
     name: 'dhcpOptions',
     targetEventName: 'CreateDhcpOptions',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: false,
   },
   LAMBDA_FUNCTION_2015: {
     name: 'lambdaFunction',
     targetEventName: 'CreateFunction20150331',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   LAMBDA_FUNCTION_2014: {
     name: 'lambdaFunction',
     targetEventName: 'CreateFunction20141111',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   CLOUDWATCH_ALARM: {
     name: 'cloudwatchAlarm',
     targetEventName: 'PutMetricAlarm',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: true,
   },
   CLOUDWATCH_EVENTS_RULE: {
     name: 'cloudwatchEventsRule',
     targetEventName: 'PutRule',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: false,
   },
   CLOUDWATCH_LOG_GROUP: {
     name: 'cloudwatchLogGroup',
     targetEventName: 'CreateLogGroup',
     targetEventType: null,
-    targetEventSource: null
+    targetEventSource: null,
+    paid: false,
   }
 };

@@ -9,12 +9,12 @@ template do
 
   value AWSTemplateFormatVersion: '2010-09-09'
 
-  value Description: 'Auto Tag (Open Source by GorillaStack)'
+  value Description: 'Auto Tag (Open Source by Infinops)'
 
   parameter 'CodeS3Bucket',
             Description: 'The name of the code bucket in S3.',
             Type: 'String',
-            Default: 'gorillastack-autotag-releases-ap-northeast-1'
+            Default: 'infinops-autotag-releases-ap-northeast-1'
 
   parameter 'CodeS3Path',
             Description: 'The path of the code zip file in the code bucket in S3.',
@@ -66,7 +66,7 @@ template do
       S3Bucket: ref('CodeS3Bucket'),
       S3Key: ref('CodeS3Path'),
     },
-    Description: 'Auto Tag (Open Source by GorillaStack)',
+    Description: 'Auto Tag (Open Source by Infinops)',
     FunctionName: sub('${LambdaName}'),
     Handler: sub('autotag_event.handler'),
     Role: get_att('AutoTagExecutionRole', 'Arn'),
@@ -113,7 +113,7 @@ template do
         }
       ]
     },
-    Path: '/gorillastack/autotag/execution/'
+    Path: '/infinops/autotag/execution/'
   }
 
   resource 'AutoTagExecutionPolicy', Type: 'AWS::IAM::Policy', Properties: {
@@ -130,7 +130,7 @@ template do
         {
           Effect: 'Allow',
           Action: ['sts:*'],
-          Resource: [ sub('arn:aws:iam::*:role/gorillastack/autotag/master/${AWS::StackName}') ]
+          Resource: [ sub('arn:aws:iam::*:role/infinops/autotag/master/${AWS::StackName}') ]
         }
       ]
     }
@@ -147,7 +147,7 @@ template do
         }
       ]
     },
-    Path: '/gorillastack/autotag/master/',
+    Path: '/infinops/autotag/master/',
   }
 
   resource 'AutoTagMasterPolicy', Type: 'AWS::IAM::Policy', Properties: {

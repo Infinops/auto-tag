@@ -11,7 +11,7 @@ mv lib/autotag.zip .
 npm prune --prod
 zip -g autotag.zip -r node_modules/
 echo "--- deploy lambda code to s3"
-BUCKET_PREFIX="gorillastack-autotag-releases"
+BUCKET_PREFIX="infinops-autotag-releases"
 echo "upload code zip to S3 bucket"
 aws s3 cp --acl public-read autotag.zip s3://${BUCKET_PREFIX}/autotag-0.5.0.zip 
 echo "sync to each region"

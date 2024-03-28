@@ -743,7 +743,7 @@ fi
 
 MIN_BASH_VERSION='4'
 MIN_BASH_MINOR_VERSION='3'
-REPO_NAME='GorillaStack/auto-tag'
+REPO_NAME='Infinops/auto-tag'
 MAIN_STACK_NAME='AutoTag'
 COLLECTOR_STACK_NAME="${MAIN_STACK_NAME}-Collector"
 
