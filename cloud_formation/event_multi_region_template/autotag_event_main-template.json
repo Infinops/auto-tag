@@ -5,10 +5,10 @@
     "LambdaName": {
       "Description": "The name of the Lambda Function.",
       "Type": "String",
-      "Default": "AutoTag",
+      "Default": "InfinopsAutoTag",
       "AllowedValues":[
-        "AutoTag",
-        "AutoTagDev"
+        "InfinopsAutoTag",
+        "InfinopsAutoTagDev"
       ]
     },
     "CodeS3Bucket": {

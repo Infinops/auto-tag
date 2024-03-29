@@ -1,6 +1,6 @@
 import requireMock from 'mock-require';
 import each from 'lodash/each';
-import cloudTrailEventConfig from '../src/cloud_trail_event_config';
+import cloudTrailEventConfig from '../src/auto-tag-lambda/cloud_trail_event_config';
 
 let sut = null;
 let constructorFlag = false;
@@ -22,10 +22,10 @@ each(cloudTrailEventConfig, (value, key) => {
 describe('AutoTag index file', () => {
   beforeAll(() => {
     requireMock(
-      '../src/aws_cloud_trail_event_listener',
+      '../src/auto-tag-lambda/aws_cloud_trail_event_listener',
       AwsCloudTrailListenerMock
     );
-    sut = require('../src/autotag_event'); // eslint-disable-line global-require
+    sut = require('../src/auto-tag-lambda/autotag_event'); // eslint-disable-line global-require
   });
 
   afterAll(() => {

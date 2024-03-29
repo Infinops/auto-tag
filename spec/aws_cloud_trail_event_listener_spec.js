@@ -1,4 +1,4 @@
-// import AwsCloudTrailEventListener from '../src/aws_cloud_trail_event_listener';
+// import AwsCloudTrailEventListener from '../src/auto-tag-lambda/aws_cloud_trail_event_listener';
 
 // describe('AwsCloudTrailEventListener', () => {
 //   const applicationContext = {

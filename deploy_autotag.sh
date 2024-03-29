@@ -21,7 +21,11 @@ function build-package () {
   (
     cd lib
     zip -x\*.zip -qr9 "autotag-${BUILD_TYPE}.zip" -- *
+   
+    zip -x\*.zip -qr9 "autotag-initial-${BUILD_TYPE}.zip" -- ../src/initial-tagging/*
+    zip -x\*.zip -qr9 "autotag-project-${BUILD_TYPE}.zip" -- ../src/project-tagging/*
   )
+
 }
 
 function upload-package () {
@@ -30,6 +34,8 @@ function upload-package () {
   echo "Uploading '${TEMP_DIR}/lib/autotag-${BUILD_TYPE}.zip' to 's3://${S3_BUCKET}/${S3_PATH}'"
 
   aws s3 cp $S3_AWS_CREDENTIALS -- "lib/autotag-${BUILD_TYPE}.zip" "s3://${S3_BUCKET}/${S3_PATH}"
+  aws s3 cp $S3_AWS_CREDENTIALS -- "lib/autotag-initial-${BUILD_TYPE}.zip" "s3://${S3_BUCKET}/${S3_PATH}"
+  aws s3 cp $S3_AWS_CREDENTIALS -- "lib/autotag-project-${BUILD_TYPE}.zip" "s3://${S3_BUCKET}/${S3_PATH}"
 }
 
 function manage-bucket () {
@@ -189,6 +195,14 @@ function cf-parameters () {
         "ParameterValue": "$S3_PATH"
       },
       {
+        "ParameterKey": "CodeS3PathInitialTagging",
+        "ParameterValue": "$S3_INITIAL_PATH"
+      },
+      {
+        "ParameterKey": "CodeS3PathProjectTagging",
+        "ParameterValue": "$S3_PROJECT_TAG_PATH"
+      },
+      {
         "ParameterKey": "AutoTagDebugLogging",
         "ParameterValue": "$LOG_LEVEL_DEBUG"
       },
@@ -268,6 +282,8 @@ EOF
       if ! [[ $(aws s3 ls $S3_AWS_CREDENTIALS "s3://$S3_BUCKET/releases/autotag-$MANAGE_RELEASE_VERSION.zip") ]] ; then
         curl -sS -LO "$RELEASE_ZIP_FILE_URL" # Download the release ZIP
         aws s3 cp $S3_AWS_CREDENTIALS "autotag-$MANAGE_RELEASE_VERSION.zip" "s3://$S3_BUCKET/releases/autotag-$MANAGE_RELEASE_VERSION.zip"
+        aws s3 cp $S3_AWS_CREDENTIALS "autotag-initial-$MANAGE_RELEASE_VERSION.zip" "s3://$S3_BUCKET/releases/autotag-initial-$MANAGE_RELEASE_VERSION.zip"
+        aws s3 cp $S3_AWS_CREDENTIALS "autotag-project-$MANAGE_RELEASE_VERSION.zip" "s3://$S3_BUCKET/releases/autotag-project-$MANAGE_RELEASE_VERSION.zip"
       fi
     )
 
@@ -275,6 +291,10 @@ EOF
 
     ZIP_FILE="autotag-$MANAGE_RELEASE_VERSION.zip"
     S3_PATH="releases/$ZIP_FILE"
+    ZIP_INITIAL_FILE="autotag-initial-$MANAGE_RELEASE_VERSION.zip"
+    ZIP_PROJECT_TAG_FILE="autotag-project-$MANAGE_RELEASE_VERSION.zip"
+    S3_INITIAL_PATH="releases/$ZIP_INITIAL_FILE"
+    S3_PROJECT_TAG_PATH="releases/$ZIP_PROJECT_TAG_FILE"
 
     # TODO: this doesn't work before v0.5.1 because the JSON template wasn't in the repo
     MAIN_TEMPLATE=$(curl -sS ${GITHUB_URL}/${RELEASE_COMMIT}/cloud_formation/event_multi_region_template/autotag_event_main-template.json)
@@ -354,6 +374,10 @@ function update-stacks () {
   if [ "$UPDATE_RELEASE_VERSION" == 'master' ] ; then
     ZIP_FILE="autotag-master-$(date +%s).zip"
     S3_PATH="master-build/$ZIP_FILE"
+    ZIP_INITIAL_FILE="autotag-initial-master-$(date +%s).zip"
+    ZIP_PROJECT_TAG_FILE="autotag-project-master-$(date +%s).zip"
+    S3_INITIAL_PATH="master-build/$ZIP_INITIAL_FILE"
+    S3_PROJECT_TAG_PATH="master-build/$ZIP_PROJECT_TAG_FILE"
 
     (
       cd "$TEMP_DIR"
@@ -370,6 +394,10 @@ function update-stacks () {
   elif [ "$UPDATE_RELEASE_VERSION" == 'local' ] ; then
     ZIP_FILE="autotag-local-$(date +%s).zip"
     S3_PATH="local-build/$ZIP_FILE"
+    ZIP_INITIAL_FILE="autotag-initial-local-$(date +%s).zip"
+    ZIP_PROJECT_TAG_FILE="autotag-project-local-$(date +%s).zip"
+    S3_INITIAL_PATH="local-build/$ZIP_INITIAL_FILE"
+    S3_PROJECT_TAG_PATH="local-build/$ZIP_PROJECT_TAG_FILE"
 
     build-package  'local'
     upload-package 'local'
@@ -392,11 +420,17 @@ EOF
       if ! [[ $(aws s3 ls $S3_AWS_CREDENTIALS "s3://$S3_BUCKET/releases/autotag-$UPDATE_RELEASE_VERSION.zip") ]] ; then
         curl -sS -LO "$RELEASE_ZIP_FILE_URL" # Download the release ZIP
         aws s3 cp $S3_AWS_CREDENTIALS "autotag-$UPDATE_RELEASE_VERSION.zip" "s3://$S3_BUCKET/releases/autotag-$UPDATE_RELEASE_VERSION.zip"
+        aws s3 cp $S3_AWS_CREDENTIALS "autotag-initial-$UPDATE_RELEASE_VERSION.zip" "s3://$S3_BUCKET/releases/autotag-initial-$UPDATE_RELEASE_VERSION.zip"
+        aws s3 cp $S3_AWS_CREDENTIALS "autotag-project-$UPDATE_RELEASE_VERSION.zip" "s3://$S3_BUCKET/releases/autotag-project-$UPDATE_RELEASE_VERSION.zip"
       fi
     )
 
     ZIP_FILE="autotag-$UPDATE_RELEASE_VERSION.zip"
     S3_PATH="releases/$ZIP_FILE"
+    ZIP_INITIAL_FILE="autotag-initial-$UPDATE_RELEASE_VERSION.zip"
+    ZIP_PROJECT_TAG_FILE="autotag-project-$UPDATE_RELEASE_VERSION.zip"
+    S3_INITIAL_PATH="releases/$ZIP_INITIAL_FILE"
+    S3_PROJECT_TAG_PATH="releases/$ZIP_PROJECT_TAG_FILE"
   fi
 
   rm -rf "$TEMP_DIR"
@@ -744,7 +778,7 @@ fi
 MIN_BASH_VERSION='4'
 MIN_BASH_MINOR_VERSION='3'
 REPO_NAME='Infinops/auto-tag'
-MAIN_STACK_NAME='AutoTag'
+MAIN_STACK_NAME='InfinopsAutoTag'
 COLLECTOR_STACK_NAME="${MAIN_STACK_NAME}-Collector"
 
 GITHUB_URL="https://raw.githubusercontent.com/$REPO_NAME"

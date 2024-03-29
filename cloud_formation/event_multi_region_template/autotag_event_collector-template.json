@@ -11,10 +11,10 @@
     "LambdaName": {
       "Description": "The name of the Lambda Function of the Main Stack Set.",
       "Type": "String",
-      "Default": "AutoTag",
+      "Default": "InfinopsAutoTag",
       "AllowedValues":[
-        "AutoTag",
-        "AutoTagDev"
+        "InfinopsAutoTag",
+        "InfinopsAutoTagDev"
       ]
     }
   },

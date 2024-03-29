@@ -7,9 +7,6 @@
 
 This is an open-source tagging solution for AWS. Deploy AutoTag to Lambda using CloudTrail consumed through CloudWatch Events and have each of your resources tagged with the ARN of who created it. Optionally, resources can be tagged with when it was created and which AWS service invoked the request if one is provided.  It was written by [GorillaStack](http://www.gorillastack.com/).
 
-[Read a blog post about the project](http://blog.gorillastack.com/gorillastack-presents-auto-tag).
-
-Also see [retro-tag](https://github.com/GorillaStack/retro-tag) for a solution to retrospectively tagging your resources using CloudTrail data.
 
 ## About
 

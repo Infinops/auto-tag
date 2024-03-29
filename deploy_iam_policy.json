@@ -19,7 +19,7 @@
                 "cloudformation:UpdateStack",
                 "cloudformation:DescribeStacks"
             ],
-            "Resource": "arn:aws:cloudformation:*:*:stack/AutoTag*/*"
+            "Resource": "arn:aws:cloudformation:*:*:stack/InfinopsAutoTag*/*"
         },
         {
             "Sid": "S3ListAllBuckets",
@@ -76,8 +76,8 @@
                 "iam:DetachRolePolicy"
             ],
             "Resource": [
-                "arn:aws:iam::*:role/infinops/autotag/master/AutoTag",
-                "arn:aws:iam::*:role/infinops/autotag/execution/AutoTagLambda"
+                "arn:aws:iam::*:role/infinops/autotag/master/InfinopsAutoTag",
+                "arn:aws:iam::*:role/infinops/autotag/execution/InfinopsAutoTagLambda"
             ]
         },
         {
@@ -86,7 +86,7 @@
             "Action": [
                 "iam:PassRole"
             ],
-            "Resource": "arn:aws:iam::*:role/infinops/autotag/execution/AutoTagLambda"
+            "Resource": "arn:aws:iam::*:role/infinops/autotag/execution/InfinopsAutoTagLambda"
         }
     ]
 }
