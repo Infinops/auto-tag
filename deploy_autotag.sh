@@ -32,10 +32,16 @@ function upload-package () {
   local BUILD_TYPE="$1"
 
   echo "Uploading '${TEMP_DIR}/lib/autotag-${BUILD_TYPE}.zip' to 's3://${S3_BUCKET}/${S3_PATH}'"
-
+ 
   aws s3 cp $S3_AWS_CREDENTIALS -- "lib/autotag-${BUILD_TYPE}.zip" "s3://${S3_BUCKET}/${S3_PATH}"
-  aws s3 cp $S3_AWS_CREDENTIALS -- "lib/autotag-initial-${BUILD_TYPE}.zip" "s3://${S3_BUCKET}/${S3_PATH}"
-  aws s3 cp $S3_AWS_CREDENTIALS -- "lib/autotag-project-${BUILD_TYPE}.zip" "s3://${S3_BUCKET}/${S3_PATH}"
+
+  echo "Uploading '${TEMP_DIR}/lib/autotag-initial-${BUILD_TYPE}.zip' to 's3://${S3_BUCKET}/${S3_INITIAL_PATH}'"
+
+  aws s3 cp $S3_AWS_CREDENTIALS -- "lib/autotag-initial-${BUILD_TYPE}.zip" "s3://${S3_BUCKET}/${S3_INITIAL_PATH}"
+
+  echo "Uploading '${TEMP_DIR}/lib/autotag-project-${BUILD_TYPE}.zip' to 's3://${S3_BUCKET}/${S3_PROJECT_TAG_PATH}'"
+
+  aws s3 cp $S3_AWS_CREDENTIALS -- "lib/autotag-project-${BUILD_TYPE}.zip" "s3://${S3_BUCKET}/${S3_PROJECT_TAG_PATH}"
 }
 
 function manage-bucket () {
@@ -260,33 +266,44 @@ function manage-stacks () {
   local ACTION="$1"
   local MANAGE_RELEASE_VERSION="$2"
   local TEMP_DIR
-
+  local ZIP_PATH=''
   # Deploy Main CloudFormation Template
 
   if [ "$ACTION" == "create" ] ; then
     TEMP_DIR=$(mktemp -d)
-    RELEASES=$(curl -sS "$GITHUB_API_RELEASES_URL")
-    RELEASE_COMMIT=$(curl -sS "${GITHUB_API_TAG_URL}/${MANAGE_RELEASE_VERSION}" | jq -r '.object.sha')
-    RELEASE_URL_QUERY=$(cat <<EOF
+    
+    if [ "$MANAGE_RELEASE_VERSION" == 'local' ] ; then
+      ZIP_FILE="autotag-local-$(date +%s).zip"
+      S3_PATH="local-build/$ZIP_FILE"
+      ZIP_INITIAL_FILE="autotag-initial-local-$(date +%s).zip"
+      ZIP_PROJECT_TAG_FILE="autotag-project-local-$(date +%s).zip"
+      S3_INITIAL_PATH="local-build/$ZIP_INITIAL_FILE"
+      S3_PROJECT_TAG_PATH="local-build/$ZIP_PROJECT_TAG_FILE"
+
+      build-package  'local'
+      ZIP_PATH = 'lib/'
+    elif ; then   
+        RELEASES=$(curl -sS "$GITHUB_API_RELEASES_URL")
+        RELEASE_COMMIT=$(curl -sS "${GITHUB_API_TAG_URL}/${MANAGE_RELEASE_VERSION}" | jq -r '.object.sha')
+        RELEASE_URL_QUERY=$(cat <<EOF
       .[] | select(.name = "$MANAGE_RELEASE_VERSION") |
       .assets[] | select( .name == "autotag-$MANAGE_RELEASE_VERSION.zip") |
       .browser_download_url
 EOF
     )
-    RELEASE_ZIP_FILE_URL=$(echo "$RELEASES" | jq -r "$RELEASE_URL_QUERY")
+        RELEASE_ZIP_FILE_URL=$(echo "$RELEASES" | jq -r "$RELEASE_URL_QUERY")
 
-    echo "Initializing AutoTag release version $MANAGE_RELEASE_VERSION"
-
+        echo "Initializing InfinopsAutoTag release version $MANAGE_RELEASE_VERSION"
+    fi
     (
       cd "$TEMP_DIR"
       if ! [[ $(aws s3 ls $S3_AWS_CREDENTIALS "s3://$S3_BUCKET/releases/autotag-$MANAGE_RELEASE_VERSION.zip") ]] ; then
         curl -sS -LO "$RELEASE_ZIP_FILE_URL" # Download the release ZIP
-        aws s3 cp $S3_AWS_CREDENTIALS "autotag-$MANAGE_RELEASE_VERSION.zip" "s3://$S3_BUCKET/releases/autotag-$MANAGE_RELEASE_VERSION.zip"
-        aws s3 cp $S3_AWS_CREDENTIALS "autotag-initial-$MANAGE_RELEASE_VERSION.zip" "s3://$S3_BUCKET/releases/autotag-initial-$MANAGE_RELEASE_VERSION.zip"
-        aws s3 cp $S3_AWS_CREDENTIALS "autotag-project-$MANAGE_RELEASE_VERSION.zip" "s3://$S3_BUCKET/releases/autotag-project-$MANAGE_RELEASE_VERSION.zip"
+        aws s3 cp $S3_AWS_CREDENTIALS "${ZIP_PATH}autotag-$MANAGE_RELEASE_VERSION.zip" "s3://$S3_BUCKET/releases/autotag-$MANAGE_RELEASE_VERSION.zip"
+        aws s3 cp $S3_AWS_CREDENTIALS "${ZIP_PATH}autotag-initial-$MANAGE_RELEASE_VERSION.zip" "s3://$S3_BUCKET/releases/autotag-initial-$MANAGE_RELEASE_VERSION.zip"
+        aws s3 cp $S3_AWS_CREDENTIALS "${ZIP_PATH}autotag-project-$MANAGE_RELEASE_VERSION.zip" "s3://$S3_BUCKET/releases/autotag-project-$MANAGE_RELEASE_VERSION.zip"
       fi
     )
-
     rm -rf "$TEMP_DIR"
 
     ZIP_FILE="autotag-$MANAGE_RELEASE_VERSION.zip"
@@ -413,7 +430,7 @@ EOF
     )
     RELEASE_ZIP_FILE_URL=$(echo "$RELEASES" | jq -r "$RELEASE_URL_QUERY")
 
-    echo "Initializing AutoTag release version $UPDATE_RELEASE_VERSION"
+    echo "Initializing InfinopsAutoTag release version $UPDATE_RELEASE_VERSION"
 
     (
       cd "$TEMP_DIR"
@@ -660,11 +677,11 @@ function show-help {
 Usage: $(basename "$0") [options] <command>
 
 Commands:
-    create                    Create the AutoTag infrastructure
-    delete                    Delete the AutoTag infrastructure
-    update-release            Update the AutoTag infrastructure with a specific release version
-    update-master             Update the AutoTag infrastructure with the latest from the master branch
-    update-local              Update the AutoTag infrastructure with the local source code
+    create                    Create the InfinopsAutoTag infrastructure
+    delete                    Delete the InfinopsAutoTag infrastructure
+    update-release            Update the InfinopsAutoTag infrastructure with a specific release version
+    update-master             Update the InfinopsAutoTag infrastructure with the latest from the master branch
+    update-local              Update the InfinopsAutoTag infrastructure with the local source code
 
 Options:
     -h   --help                  Show this screen
@@ -833,4 +850,4 @@ elif [ "$COMMAND" == 'update-local' ] ; then
 
 fi
 
-echo "The AutoTag deployment is complete"
+echo "The InfinopsAutoTag deployment is complete"
