@@ -1,92 +1,118 @@
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "Ec2AndSts",
-            "Effect": "Allow",
-            "Action": [
-                "ec2:DescribeRegions",
-                "sts:GetCallerIdentity"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Sid": "CloudFormationManageStacks",
-            "Effect": "Allow",
-            "Action": [
-                "cloudformation:CreateStack",
-                "cloudformation:DeleteStack",
-                "cloudformation:UpdateStack",
-                "cloudformation:DescribeStacks"
-            ],
-            "Resource": "arn:aws:cloudformation:*:*:stack/InfinopsAutoTag*/*"
-        },
-        {
-            "Sid": "S3ListAllBuckets",
-            "Effect": "Allow",
-            "Action": "s3:ListAllMyBuckets",
-            "Resource": "arn:aws:s3:::*"
-        },
-        {
-            "Sid": "S3Bucket",
-            "Effect": "Allow",
-            "Action": [
-                "s3:CreateBucket",
-                "s3:GetBucketPolicy",
-                "s3:PutBucketPolicy",
-                "s3:PutBucketPublicAccessBlock",
-                "s3:GetBucketLocation",
-                "s3:ListBucket"
-            ],
-            "Resource": "arn:aws:s3:::my-autotag-bucket"
-        },
-        {
-            "Sid": "S3ObjectReadWrite",
-            "Effect": "Allow",
-            "Action": [
-                "s3:GetObject",
-                "s3:PutObject"
-            ],
-            "Resource": "arn:aws:s3:::my-autotag-bucket/*"
-        },
-        {
-            "Sid": "ManagedCloudFormationResources",
-            "Effect": "Allow",
-            "Action": [
-                "events:*",
-                "lambda:*",
-                "logs:*",
-                "sns:*",
-                "iam:GetRole"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Sid": "IamRole",
-            "Effect": "Allow",
-            "Action": [
-                "iam:CreateRole",
-                "iam:DeleteRole",
-                "iam:UpdateRole",
-                "iam:GetPolicy",
-                "iam:GetRolePolicy",
-                "iam:PutRolePolicy",
-                "iam:DeleteRolePolicy",
-                "iam:AttachRolePolicy",
-                "iam:DetachRolePolicy"
-            ],
-            "Resource": [
-                "arn:aws:iam::*:role/infinops/autotag/master/InfinopsAutoTag",
-                "arn:aws:iam::*:role/infinops/autotag/execution/InfinopsAutoTagLambda"
-            ]
-        },
-        {
-            "Sid": "IamPassRole",
-            "Effect": "Allow",
-            "Action": [
-                "iam:PassRole"
-            ],
-            "Resource": "arn:aws:iam::*:role/infinops/autotag/execution/InfinopsAutoTagLambda"
-        }
-    ]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "Ec2AndSts",
+			"Effect": "Allow",
+			"Action": [
+				"ec2:DescribeRegions",
+				"sts:GetCallerIdentity"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "CloudFormationManageStacks",
+			"Effect": "Allow",
+			"Action": [
+				"cloudformation:CreateStack",
+				"cloudformation:DeleteStack",
+				"cloudformation:UpdateStack",
+				"cloudformation:DescribeStacks"
+			],
+			"Resource": "arn:aws:cloudformation:*:*:stack/InfinopsAutoTag*/*"
+		},
+		{
+			"Sid": "S3ListAllBuckets",
+			"Effect": "Allow",
+			"Action": "s3:ListAllMyBuckets",
+			"Resource": "arn:aws:s3:::*"
+		},
+		{
+			"Sid": "S3Bucket",
+			"Effect": "Allow",
+			"Action": [
+				"s3:CreateBucket",
+				"s3:GetBucketPolicy",
+				"s3:PutBucketPolicy",
+				"s3:PutBucketPublicAccessBlock",
+				"s3:GetBucketLocation",
+				"s3:ListBucket"
+			],
+			"Resource": "arn:aws:s3:::my-autotag-bucket"
+		},
+		{
+			"Sid": "S3ObjectReadWrite",
+			"Effect": "Allow",
+			"Action": [
+				"s3:GetObject",
+				"s3:PutObject"
+			],
+			"Resource": "arn:aws:s3:::my-autotag-bucket/*"
+		},
+		{
+			"Sid": "ManagedCloudFormationResources",
+			"Effect": "Allow",
+			"Action": [
+				"lambda:*",
+				"logs:*",
+				"sns:*",
+				"iam:GetRole",
+				"dynamodb:CreateTable",
+				"dynamodb:DescribeTable",
+				"dynamodb:TagResource",
+				"events:PutRule",
+				"events:PutTargets"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "IamRole",
+			"Effect": "Allow",
+			"Action": [
+				"iam:CreateRole",
+				"iam:DeleteRole",
+				"iam:UpdateRole",
+				"iam:GetPolicy",
+				"iam:GetRolePolicy",
+				"iam:PutRolePolicy",
+				"iam:DeleteRolePolicy",
+				"iam:AttachRolePolicy",
+				"iam:DetachRolePolicy"
+			],
+			"Resource": [
+				"arn:aws:iam::*:role/infinops/autotag/master/InfinopsAutoTag",
+				"arn:aws:iam::*:role/infinops/autotag/execution/InfinopsAutoTagLambda"
+			]
+		},
+		{
+			"Sid": "IamPassRole",
+			"Effect": "Allow",
+			"Action": [
+				"iam:PassRole"
+			],
+			"Resource": "arn:aws:iam::*:role/infinops/autotag/execution/InfinopsAutoTagLambda"
+		},
+		{
+			"Sid": "StackSet",
+			"Effect": "Allow",
+			"Action": [
+				"cloudformation:ListStackSetOperationResults",
+				"cloudformation:ListStackSetOperations",
+				"cloudformation:ListStackSets",
+				"cloudformation:DescribeStackSet",
+				"cloudformation:DescribeStackSetOperation",
+				"cloudformation:DetectStackSetDrift",
+				"cloudformation:CreateStackSet",
+				"cloudformation:DeleteStackSet",
+				"cloudformation:ImportStacksToStackSet",
+				"cloudformation:StopStackSetOperation",
+				"cloudformation:UpdateStackSet",
+				"cloudformation:CreateStackInstances",
+				"cloudformation:DeleteStackInstances",
+				"cloudformation:UpdateStackInstances",
+				"cloudformation:DescribeStackInstance"
+			],
+			"Resource": "*"
+		}
+	]
 }

@@ -1,39 +1,39 @@
-import { EC2 } from "@aws-sdk/client-ec2";
-import { fetchResourcesInRegion } from './resource.mjs'
-import { tagResource } from './tagging.mjs'
+import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
+import { ec2Client } from './clients.mjs';
+import { fetchResourcesInRegion } from './resource.mjs';
+import { tagResource } from './tagging.mjs';
 
-
-export const handler = async (event, context) => {
+export const handler = async (event, _context) => {
     try {
-
         const defaultProjectTag = 'project';
         const defaultProjectEmptyValue = 'unknown';
-        const projectList = event.projectList || [];
         let projectTagName = defaultProjectTag;
         let projectTagEmptyValue = defaultProjectEmptyValue;
-        
-
+        const projectList = (await getProjectList()).Items.map(item => item.project.S);
+        if (projectList.length === 0) {
+            return { statusCode: 500, body: 'Empty project list' };
+        }
         if (event.projectTagName != undefined && event.projectTagName != null && event.projectTagName.length > 0) {
-            projectTagName = event.projectTagName
+            projectTagName = event.projectTagName;
         }
 
         if (event.projectTagEmptyValue != undefined && event.projectTagEmptyValue != null && event.projectTagEmptyValue.length > 0) {
-            projectTagEmptyValue = event.projectTagEmptyValue
+            projectTagEmptyValue = event.projectTagEmptyValue;
         }
-        let regions = await fetchRegions(); // Fetch regions from EC2, can use any service
+        const regions = await fetchRegions(); // Fetch regions from EC2, can use any service
         let resourcesFinal = [];
-        for (let region of regions) {
+        for (const region of regions) {
             const resourcesInRegion = await fetchResourcesInRegion(region, projectTagName, projectTagEmptyValue);
-            resourcesInRegion.forEach((element) => element.region = region);
+            resourcesInRegion.forEach(element => element.region = region);
             resourcesFinal = resourcesFinal.concat(resourcesInRegion);
         }
         console.log('resourcesFinal', resourcesFinal.filter(resource => resource.Tags.find(tag => tag.Key.toLowerCase() === 'name')).length);
         console.log('resourcesFinal', resourcesFinal.filter(resource => resource.Tags.find(tag => tag.Key.toLowerCase() === 'name')));
         const taggingPromises = resourcesFinal.filter(resource => resource.Tags.find(tag => tag.Key.toLowerCase() === 'name')).map(async resource => {
-            const result =  await tagResource(resource, projectList, projectTagName);
+            const result = await tagResource(resource, projectList, projectTagName);
             console.log(result);
-            return result
-        })
+            return result;
+        });
         const taggingResult = (await Promise.all(taggingPromises)).flat();
         return { statusCode: 200, body: taggingResult };
     } catch (error) {
@@ -44,7 +44,20 @@ export const handler = async (event, context) => {
 
 
 async function fetchRegions() {
-    const ec2Client = new EC2({});
     const response = await ec2Client.describeRegions({});
     return response.Regions.map(region => region.RegionName);
+}
+
+async function getProjectList() {
+    const client = new DynamoDBClient({
+        region: 'us-west-2'
+    });
+    const input = { // ScanInput
+        TableName: 'Infinops_ProjectName_Tagging_Table', // required
+        Select: 'ALL_ATTRIBUTES',
+        ReturnConsumedCapacity: 'NONE',
+    };
+    const command = new ScanCommand(input);
+    const response = await client.send(command);
+    return response;
 }

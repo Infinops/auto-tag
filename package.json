@@ -1,6 +1,6 @@
 {
   "name": "autotag-infinops",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Autotagging for AWS resources Infinops edition",
   "main": "autotag.js",
   "private": true,
