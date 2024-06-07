@@ -362,7 +362,7 @@ EOF
 
       COLLECTOR_TEMPLATE=$(curl -sS ${GITHUB_URL}/${RELEASE_COMMIT}/cloud_formation/event_multi_region_template/autotag_event_collector-template.json)
       if [ "$MANAGE_RELEASE_VERSION" == 'local' ] ; then
-        COLLECTOR_TEMPLATE=$(cat /cloud_formation/event_multi_region_template/autotag_event_collector-template.json)
+        COLLECTOR_TEMPLATE=$(cat ./cloud_formation/event_multi_region_template/autotag_event_collector-template.json)
       fi
       aws cloudformation create-stack \
         $AWS_CREDENTIALS \
