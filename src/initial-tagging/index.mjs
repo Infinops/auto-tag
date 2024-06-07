@@ -6,20 +6,20 @@ import {tagResource} from './tagging.mjs'
 export const handler = async (event, context) => {
     try {
         
-        const defaultCheckTags = ['owner','project','paid'];
-        const defaultNewTags = [{Key:'owner',Value:'unknown'}, 
-        {Key:'name',Value:'unset'}, 
-        {Key:'project',Value:'unknown'}, 
-        {Key:'project_status',Value:'unknown'},
-        {Key:'team',Value:'unknown'},
-        {Key:'application',Value:'unknown'}, 
-        {Key:'application_owner',Value:'unknown'},
-        {Key:'env',Value:'unknown'},
-        {Key:'userData',Value:'unknown'}, 
-        {Key:'critical_status',Value:'unknown'},
-        {Key:'lifecycle',Value:'unknown'},
-        {Key:'compliance',Value:'unknown'}, 
-        {Key:'paid',Value:'unset'}]
+        const defaultCheckTags = ['Owner','Project','Paid'];
+        const defaultNewTags = [{Key:'Owner',Value:'unset'}, 
+        {Key:'Name',Value:'unset'}, 
+        {Key:'Project',Value:'unset'}, 
+        {Key:'Project-Status',Value:'unset'},
+        {Key:'Team',Value:'unset'},
+        {Key:'Application',Value:'unset'}, 
+        {Key:'Application-Owner',Value:'unset'},
+        {Key:'Environment',Value:'unset'},
+        {Key:'User-Data',Value:'unset'}, 
+        {Key:'Critical-Status',Value:'unset'},
+        {Key:'Lifecycle',Value:'unset'},
+        {Key:'Compliance',Value:'unset'}, 
+        {Key:'Paid',Value:'unset'}]
         let checkTags = [];
         let newTags = [];
         console.log(event);

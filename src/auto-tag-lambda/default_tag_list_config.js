@@ -4,43 +4,43 @@ export default {
     value: process.env.DEFAULT_NAME || 'unset'
   },
   APPLICATION: {
-    name: 'application',
+    name: 'Application',
     value: process.env.DEFAULT_APPLICATION || 'unknown'
   },
   APPLICATION_OWNER: {
-    name: 'application_owner',
+    name: 'Application-Owner',
     value: process.env.DEFAULT_APPLICATION_OWNER || 'unknown'
   },
   COMPLIANCE: {
-    name: 'compliance',
+    name: 'Compliance',
     value: process.env.DEFAULT_COMPLIANCE || 'unknown'
   },
   CRITICAL_STATUS: {
-    name: 'critical_status',
+    name: 'Critical-Status',
     value: process.env.DEFAULT_CRITICAL_STATUS || 'unknown'
   },
   ENV: {
-    name: 'env',
+    name: 'Environment',
     value: process.env.DEFAULT_ENV || 'unknown'
   },
   LIFECYCLE: {
-    name: 'lifecycle',
+    name: 'Lifecycle',
     value: process.env.DEFAULT_LIFECYCLE || 'unknown'
   },
   PROJECT: {
-    name: 'project',
+    name: 'Project',
     value: process.env.DEFAULT_PROJECT || 'unknown'
   },
   PROJECT_STATUS: {
-    name: 'project_status',
+    name: 'Project-Status',
     value: process.env.DEFAULT_PROJECT_STATUS || 'unknown'
   },
   TEAM: {
-    name: 'team',
+    name: 'Team',
     value: process.env.DEFAULT_TEAM || 'unknown'
   },
   USERDATA: {
-    name: 'userData',
+    name: 'User-Data',
     value: process.env.DEFAULT_USERDATA || 'unknown'
   }
 };

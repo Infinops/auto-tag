@@ -5,8 +5,8 @@ import { tagResource } from './tagging.mjs';
 
 export const handler = async (event, _context) => {
     try {
-        const defaultProjectTag = 'project';
-        const defaultProjectEmptyValue = 'unknown';
+        const defaultProjectTag = 'Project';
+        const defaultProjectEmptyValue = 'unset';
         let projectTagName = defaultProjectTag;
         let projectTagEmptyValue = defaultProjectEmptyValue;
         const projectList = (await getProjectList()).Items.map(item => item.project.S);
@@ -53,7 +53,7 @@ async function getProjectList() {
         region: 'us-west-2'
     });
     const input = { // ScanInput
-        TableName: 'Infinops_ProjectName_Tagging_Table', // required
+        TableName: process.env.DYNAMO_TABLE, // required
         Select: 'ALL_ATTRIBUTES',
         ReturnConsumedCapacity: 'NONE',
     };

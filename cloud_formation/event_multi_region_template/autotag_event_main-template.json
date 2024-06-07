@@ -13,23 +13,22 @@
     },
     "CodeS3Bucket": {
       "Description": "The name of the code bucket in S3.",
-      "Type": "String",
-      "Default": "infinops-autotag-releases-ap-northeast-1"
+      "Type": "String"
     },
     "CodeS3Path": {
-      "Description": "The path of the code zip file in the code bucket in S3.",
+      "Description": "The path of the code autotag zip file in the code bucket in S3.",
       "Type": "String",
-      "Default": "autotag-0.1.1.zip"
+      "Default": "releases/autotag-local.zip"
     },
     "CodeS3PathInitialTagging": {
-      "Description": "The path of the initial tagging code zip file in the code bucket in S3.",
+      "Description": "The path of the autotag initial tagging code zip file in the code bucket in S3.",
       "Type": "String",
-      "Default": "autotag-initial-0.1.1.zip"
+      "Default": "releases/autotag-initial-local.zip"
     },
     "CodeS3PathProjectTagging": {
-      "Description": "The path of the project tagging code zip file in the code bucket in S3.",
+      "Description": "The path of the autotag project tagging code zip file in the code bucket in S3.",
       "Type": "String",
-      "Default": "autotag-project-0.1.1.zip"
+      "Default": "releases/autotag-project-local.zip"
     },
     "AutoTagDebugLogging": {
       "Description": "Enable/Disable Debug Logging for the Lambda Function for all processed CloudTrail events.",
@@ -182,39 +181,52 @@
           ]
         },
         "Runtime": "nodejs20.x",
-        "Timeout": 600
+        "Timeout": 600,
+        "Environment": {
+          "Variables": {
+            "DYNAMO_TABLE": {
+              "Fn::Sub": "${InfinopsProjectNameTaggingTable}"
+            }
+          }
+        }
       }
     },
     "EventBridgeRuleEveryHour": {
       "Type": "AWS::Events::Rule",
       "Properties": {
         "EventBusName": "default",
-        "Name": "infinops-cron-hour-rule",
+        "Name": "Infinops-cron-hour-rule",
         "ScheduleExpression": "rate(1 hour)",
-        "State": "enabled",
-        "Targets": {
-          "Id":{
-            "Fn::Sub": "${LambdaName}ProjectTagging"
-          },
-          "":{
-            "Fn::Sub": "arn:aws:lambda:*:${AWS::AccountId}:function:${LambdaName}ProjectTagging"
-          },
-          "Input":"Matched event"
-        }
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Id": {
+              "Fn::Sub": "${LambdaName}ProjectTagging"
+            },
+            "Arn": {
+              "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaName}ProjectTagging"
+            },
+            "Input": "{\"message\": \"Matched event\"}"
+          }
+        ]
       }
     },
     "InfinopsProjectNameTaggingTable": {
       "Type": "AWS::DynamoDB::Table",
       "Properties": {
         "BillingMode": "PAY_PER_REQUEST",
-        "AttributeDefinitions": {
-          "AttributeName": "project",
-          "AttributeType": "S"
-        },
-        "KeySchema": [{
-          "AttributeName": "project",
-          "KeyType": "HASH"
-        }]
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "project",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "project",
+            "KeyType": "HASH"
+          }
+        ]
       }
     },
     "AutoTagLogGroup": {
@@ -484,11 +496,12 @@
                 "Action": [
                   "dynamodb:BatchGetItem",
                   "dynamodb:GetItem",
-                  "dynamodb:Scan"
+                  "dynamodb:Scan",
+                  "dynamodb:DescribeTable"
                 ],
                 "Resource": [
                   {
-                    "Fn::Sub": "arn:aws:dynamodb:*:${AWS::AccountId}:table/InfinopsProjectNameTaggingTable"
+                    "Fn::Sub": "arn:aws:dynamodb:*:${AWS::AccountId}:table/${InfinopsProjectNameTaggingTable}"
                   }
                 ]
             }

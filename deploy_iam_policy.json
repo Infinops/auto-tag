@@ -19,7 +19,7 @@
 				"cloudformation:UpdateStack",
 				"cloudformation:DescribeStacks"
 			],
-			"Resource": "arn:aws:cloudformation:*:*:stack/InfinopsAutoTag*/*"
+			"Resource": "arn:aws:cloudformation:*:*:stack/*/*"
 		},
 		{
 			"Sid": "S3ListAllBuckets",
@@ -53,15 +53,11 @@
 			"Sid": "ManagedCloudFormationResources",
 			"Effect": "Allow",
 			"Action": [
-				"lambda:*",
-				"logs:*",
-				"sns:*",
-				"iam:GetRole",
-				"dynamodb:CreateTable",
-				"dynamodb:DescribeTable",
-				"dynamodb:TagResource",
-				"events:PutRule",
-				"events:PutTargets"
+				"events:*",
+                "lambda:*",
+                "logs:*",
+                "sns:*",
+                "iam:GetRole"
 			],
 			"Resource": "*"
 		},
@@ -79,10 +75,7 @@
 				"iam:AttachRolePolicy",
 				"iam:DetachRolePolicy"
 			],
-			"Resource": [
-				"arn:aws:iam::*:role/infinops/autotag/master/InfinopsAutoTag",
-				"arn:aws:iam::*:role/infinops/autotag/execution/InfinopsAutoTagLambda"
-			]
+			"Resource": ["*"]
 		},
 		{
 			"Sid": "IamPassRole",
@@ -90,7 +83,7 @@
 			"Action": [
 				"iam:PassRole"
 			],
-			"Resource": "arn:aws:iam::*:role/infinops/autotag/execution/InfinopsAutoTagLambda"
+			"Resource": "*"
 		},
 		{
 			"Sid": "StackSet",

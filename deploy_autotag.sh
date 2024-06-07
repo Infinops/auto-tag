@@ -6,6 +6,8 @@ BoldText=$(tput bold)
 NormalText=$(tput sgr0)
 
 function build-package () {
+  echo "Building the package..."
+
   local BUILD_TYPE="$1"
 
   if [ -n "$DEV_MODE" ] ; then
@@ -21,9 +23,16 @@ function build-package () {
   (
     cd lib
     zip -x\*.zip -qr9 "autotag-${BUILD_TYPE}.zip" -- *
-   
-    zip -x\*.zip -qr9 "autotag-initial-${BUILD_TYPE}.zip" -- ../src/initial-tagging/*
-    zip -x\*.zip -qr9 "autotag-project-${BUILD_TYPE}.zip" -- ../src/project-tagging/*
+  )
+
+  (
+    cd src/initial-tagging
+    zip -x\*.zip -qr9 "../../lib/autotag-initial-${BUILD_TYPE}.zip" -- *
+  )
+
+  (
+    cd src/project-tagging
+    zip -x\*.zip -qr9 "../../lib/autotag-project-${BUILD_TYPE}.zip" -- *
   )
 
 }
@@ -313,7 +322,7 @@ EOF
     # TODO: this doesn't work before v0.5.1 because the JSON template wasn't in the repo
     MAIN_TEMPLATE=$(curl -sS ${GITHUB_URL}/${RELEASE_COMMIT}/cloud_formation/event_multi_region_template/autotag_event_main-template.json)
     if [ "$MANAGE_RELEASE_VERSION" == 'local' ] ; then
-      MAIN_TEMPLATE=$(cat /cloud_formation/event_multi_region_template/autotag_event_main-template.json)
+      MAIN_TEMPLATE=$(cat ./cloud_formation/event_multi_region_template/autotag_event_main-template.json)
     fi
       
 
@@ -419,8 +428,13 @@ function update-stacks () {
     S3_INITIAL_PATH="local-build/$ZIP_INITIAL_FILE"
     S3_PROJECT_TAG_PATH="local-build/$ZIP_PROJECT_TAG_FILE"
 
-    build-package  'local'
-    upload-package 'local'
+    
+    (
+      npm install
+
+      build-package  'local'
+      upload-package 'local'
+    )
 
   else # this should be a release version
     RELEASES=$(curl -sS "$GITHUB_API_RELEASES_URL")
