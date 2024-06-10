@@ -5,42 +5,42 @@ export default {
   },
   APPLICATION: {
     name: 'Application',
-    value: process.env.DEFAULT_APPLICATION || 'unknown'
+    value: process.env.DEFAULT_APPLICATION || 'unset'
   },
   APPLICATION_OWNER: {
     name: 'Application-Owner',
-    value: process.env.DEFAULT_APPLICATION_OWNER || 'unknown'
+    value: process.env.DEFAULT_APPLICATION_OWNER || 'unset'
   },
   COMPLIANCE: {
     name: 'Compliance',
-    value: process.env.DEFAULT_COMPLIANCE || 'unknown'
+    value: process.env.DEFAULT_COMPLIANCE || 'unset'
   },
   CRITICAL_STATUS: {
     name: 'Critical-Status',
-    value: process.env.DEFAULT_CRITICAL_STATUS || 'unknown'
+    value: process.env.DEFAULT_CRITICAL_STATUS || 'unset'
   },
   ENV: {
     name: 'Environment',
-    value: process.env.DEFAULT_ENV || 'unknown'
+    value: process.env.DEFAULT_ENV || 'unset'
   },
   LIFECYCLE: {
     name: 'Lifecycle',
-    value: process.env.DEFAULT_LIFECYCLE || 'unknown'
+    value: process.env.DEFAULT_LIFECYCLE || 'unset'
   },
   PROJECT: {
     name: 'Project',
-    value: process.env.DEFAULT_PROJECT || 'unknown'
+    value: process.env.DEFAULT_PROJECT || 'unset'
   },
   PROJECT_STATUS: {
     name: 'Project-Status',
-    value: process.env.DEFAULT_PROJECT_STATUS || 'unknown'
+    value: process.env.DEFAULT_PROJECT_STATUS || 'unset'
   },
   TEAM: {
     name: 'Team',
-    value: process.env.DEFAULT_TEAM || 'unknown'
+    value: process.env.DEFAULT_TEAM || 'unset'
   },
   USERDATA: {
     name: 'User-Data',
-    value: process.env.DEFAULT_USERDATA || 'unknown'
+    value: process.env.DEFAULT_USERDATA || 'unset'
   }
 };

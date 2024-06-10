@@ -1,17 +1,14 @@
-import { ResourceGroupsTaggingAPIClient, GetResourcesCommand } from "@aws-sdk/client-resource-groups-tagging-api"; 
-
-
-
-
+import { ResourceGroupsTaggingAPIClient, GetResourcesCommand } from "@aws-sdk/client-resource-groups-tagging-api";
 
 export async function fetchResourcesInRegion(region) {
   let resultList = [];
-   const clientConfig = {
-     region,
-     maxAttempts: 50,
-   }
-   const client = new ResourceGroupsTaggingAPIClient(clientConfig);
-   let input = { // GetResourcesInput
+  const clientConfig = {
+    region,
+    maxAttempts: 50,
+  }
+
+  const client = new ResourceGroupsTaggingAPIClient(clientConfig);
+  let input = { // GetResourcesInput
     // TagFilters: [ // TagFilterList
     //   // { // TagFilter
     //   //   Key: "STRING_VALUE",
@@ -22,96 +19,100 @@ export async function fetchResourcesInRegion(region) {
     // ],
     ResourcesPerPage: 100,
     ResourceTypeFilters: [ // ResourceTypeFilterList 
-      
-  "mq",
-  "appstream",
-  "cloudwatch",
-  "events",
-  "logs",
-  "s3",
-  "ec2",
-  "dynamodb",
-  "elasticmapreduce",
-  "rds",
-  "braket",
-  "acm",
-  "cloud9",
-  "cloudtrail",
-  "codeartifact",
-  "codecommit",
-  "codeguru-reviewer",
-  "codepipeline",
-  "cognito-identity",
-  "comprehend",
-  "config",
-  "dms",
-  "databrew",
-  "dataexchange",
-  "datapipeline",
-  "elasticfilesystem",
-  "eks",
-  "emr-containers",
-  "elasticache",
-  "elasticbeanstalk",
-  "docdb-elastic",
-  "elastic-inference",
-  "elasticloadbalancing",
-  "es",
-  "osis",
-  "aoss",
-  "fsx",
-  "forecast",
-  "pipes",
-  "frauddetector",
-  "glacier",
-  "glue",
-  "greengrass",
-  "iot",
-  "iotanalytics",
-  "iotevents",
-  "kms",
-  "kinesis",
-  "kinesisanalytics",
-  "macie2",
-  "lambda",
-  "organizations",
-  "qldb",
-  "redshift",
-  "redshift-serverless",
-  "robomaker",
-  "resource-groups",
-  "ram",
-  "ses",
-  "sns",
-  "route53resolver",
-  "sqs",
-  "sagemaker",
-  "secretsmanager",
-  "states",
-  "storagegateway",
-  "workspaces",
-  "ssm"
+
+      "mq",
+      "appstream",
+      "cloudwatch",
+      "events",
+      "logs",
+      "s3",
+      "ec2",
+      "dynamodb",
+      "elasticmapreduce",
+      "rds",
+      "braket",
+      "acm",
+      "cloud9",
+      "cloudtrail",
+      "codeartifact",
+      "codecommit",
+      "codeguru-reviewer",
+      "codepipeline",
+      "cognito-identity",
+      "comprehend",
+      "config",
+      "dms",
+      "databrew",
+      "dataexchange",
+      "datapipeline",
+      "elasticfilesystem",
+      "eks",
+      "emr-containers",
+      "elasticache",
+      "elasticbeanstalk",
+      "docdb-elastic",
+      "elastic-inference",
+      "elasticloadbalancing",
+      "es",
+      "osis",
+      "aoss",
+      "fsx",
+      "forecast",
+      "pipes",
+      "frauddetector",
+      "glacier",
+      "glue",
+      "greengrass",
+      "iot",
+      "iotanalytics",
+      "iotevents",
+      "kms",
+      "kinesis",
+      "kinesisanalytics",
+      "macie2",
+      "lambda",
+      "organizations",
+      "qldb",
+      "redshift",
+      "redshift-serverless",
+      "robomaker",
+      "resource-groups",
+      "ram",
+      "ses",
+      "sns",
+      "route53resolver",
+      "sqs",
+      "sagemaker",
+      "secretsmanager",
+      "states",
+      "storagegateway",
+      "workspaces",
+      "ssm"
 
     ],
     // IncludeComplianceDetails: true, // Maybe in future?
     // ExcludeCompliantResources: true, // Maybe in future?
   };
+
   let command = new GetResourcesCommand(input);
   let response = await client.send(command);
+
   try {
-  resultList = response.ResourceTagMappingList;
-  while (response.PaginationToken!=null && response.PaginationToken!=undefined && response.PaginationToken!='') {
-    input.PaginationToken = response.PaginationToken;
-    command = new GetResourcesCommand(input);
-    response = await client.send(command);
-    resultList= resultList.concat(response.ResourceTagMappingList);
-  }
-  console.log(region,resultList);
-  return resultList;
+    resultList = response.ResourceTagMappingList;
+
+    while (response.PaginationToken != null && response.PaginationToken != undefined && response.PaginationToken != '') {
+      input.PaginationToken = response.PaginationToken;
+      command = new GetResourcesCommand(input);
+      response = await client.send(command);
+      resultList = resultList.concat(response.ResourceTagMappingList);
+    }
+
+    return resultList;
   }
   catch (error) {
-      console.log(region, error);
-      return [];
+    console.log(region, error);
+
+    return [];
   }
   // { // GetResourcesOutput
   //   PaginationToken: "STRING_VALUE",
@@ -136,6 +137,6 @@ export async function fetchResourcesInRegion(region) {
   //     },
   //   ],
   // };
-  
+
 }
 

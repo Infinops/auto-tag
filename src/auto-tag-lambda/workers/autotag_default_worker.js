@@ -5,8 +5,8 @@ import DEFAULT_TAGS from '../default_tag_list_config.js';
 import values from 'lodash/values.js';
 
 export const AUTOTAG_TAG_NAME_PREFIX = 'AutoTag_';
-const AUTOTAG_CREATOR_TAG_NAME = 'owner';
-const AUTOTAG_PAID_TAG_NAME = 'paid';
+const AUTOTAG_CREATOR_TAG_NAME = 'Owner';
+const AUTOTAG_PAID_TAG_NAME = 'Paid';
 const AUTOTAG_CREATE_TIME_TAG_NAME = `${AUTOTAG_TAG_NAME_PREFIX}CreateTime`;
 const AUTOTAG_INVOKED_BY_TAG_NAME = `${AUTOTAG_TAG_NAME_PREFIX}InvokedBy`;
 const ROLE_PREFIX = 'arn:aws:iam::';
