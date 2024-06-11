@@ -104,22 +104,25 @@ class AutotagDefaultWorker {
   
   getAutotagTags() {
     let tags = this.getOnCreationTags();
-    return [...((tags!=null && checkOnExist(tags[this.getCreatorTagName()])) ? this.getAutotagCreatorTag() : []),
-    ...((tags!=null && checkOnExist(tags[this.getPaidTagName()])) ? this.getAutotagPaidTag() : []),
-    ...(SETTINGS.AutoTags.CreateTime ? [this.getAutotagCreateTimeTag()] : []),
-    getDefaultEmptyTags(tags),
-    ...(this.getInvokedByTagValue() && SETTINGS.AutoTags.InvokedBy ? [this.getAutotagInvokedByTag()] : []), ...this.getCustomTags()];
+    return [
+      ...(tags != null && this.checkOnExist(tags[this.getCreatorTagName()]) ? [this.getAutotagCreatorTag()] : []),
+      ...(tags != null && this.checkOnExist(tags[this.getPaidTagName()]) ? [this.getAutotagPaidTag()] : []),
+      ...(SETTINGS.AutoTags.CreateTime ? [this.getAutotagCreateTimeTag()] : []),
+      ...this.getDefaultEmptyTags(tags),
+      ...(this.getInvokedByTagValue() && SETTINGS.AutoTags.InvokedBy ? [this.getAutotagInvokedByTag()] : []),
+      ...this.getCustomTags()
+    ];
   }
 
   getDefaultEmptyTags(tags) {
     let defaultTagList = values(DEFAULT_TAGS);
     let outputList = [];
     defaultTagList.forEach(default_tag => {
-      if (tags!=null && checkOnExist(default_tag.name)) {
+      if (tags != null && this.checkOnExist(default_tag.name)) {
         outputList.push({
           Key: default_tag.name,
           Value: default_tag.value
-        })
+        });
       }
     });
     return outputList;
