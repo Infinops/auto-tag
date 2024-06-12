@@ -118,7 +118,7 @@ class AutotagDefaultWorker {
     let defaultTagList = values(DEFAULT_TAGS);
     let outputList = [];
     defaultTagList.forEach(default_tag => {
-      if (tags != null && this.checkOnExist(default_tag.name)) {
+      if (!tags || !tags.some(tag => tag.Key === default_tag.name)) {
         outputList.push({
           Key: default_tag.name,
           Value: default_tag.value
