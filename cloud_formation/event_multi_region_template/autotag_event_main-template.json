@@ -156,69 +156,12 @@
         "Timeout": 600
       }
     },
-    "EventBridgeRuleInvokeLambdaOnStackCreateComplete": {
-      "Type": "AWS::Events::Rule",
+    "CustomAutoTagResource": {
+      "Type": "Custom::AutoTag",
       "Properties": {
-        "EventPattern": {
-          "source": [ "aws.cloudformation" ],
-          "detail-type": [ "AWS API Call via CloudTrail" ],
-          "detail": {
-            "eventSource": [ "cloudformation.amazonaws.com" ],
-            "eventName": [ "CreateStack" ],
-            "responseElements": {
-              "stackStatus": [ "CREATE_COMPLETE" ]
-            }
-          }
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": { "Fn::GetAtt": [ "AutoTagInititialTaggingLambdaFunction", "Arn" ] },
-            "Id": "TargetFunctionV1"
-          }
-        ]
-      }
-    },
-    "EventBridgeRuleInvokeLambdaHourly": {
-      "Type": "AWS::Events::Rule",
-      "Properties": {
-        "ScheduleExpression": "rate(1 hour)",
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": { "Fn::GetAtt": [ "AutoTagInititialTaggingLambdaFunction", "Arn" ] },
-            "Id": "HourlyInvocation"
-          }
-        ]
-      }
-    },
-    "LambdaInvokePermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Ref": "AutoTagInititialTaggingLambdaFunction"
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
+        "ServiceToken": {
           "Fn::GetAtt": [
-            "EventBridgeRuleInvokeLambdaOnStackCreateComplete",
-            "Arn"
-          ]
-        }
-      }
-    },
-    "HourlyLambdaInvokePermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Ref": "AutoTagInititialTaggingLambdaFunction"
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "EventBridgeRuleInvokeLambdaHourly",
+            "AutoTagInititialTaggingLambdaFunction",
             "Arn"
           ]
         }

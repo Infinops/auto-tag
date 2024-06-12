@@ -4,7 +4,7 @@ import SETTINGS from '../autotag_settings.js';
 import DEFAULT_TAGS from '../default_tag_list_config.js';
 import values from 'lodash/values.js';
 
-export const AUTOTAG_TAG_NAME_PREFIX = 'AutoTag_';
+export const AUTOTAG_TAG_NAME_PREFIX = 'AutoTag-';
 const AUTOTAG_CREATOR_TAG_NAME = 'Owner';
 const AUTOTAG_PAID_TAG_NAME = 'Paid';
 const AUTOTAG_CREATE_TIME_TAG_NAME = `${AUTOTAG_TAG_NAME_PREFIX}CreateTime`;
@@ -118,7 +118,12 @@ class AutotagDefaultWorker {
     let defaultTagList = values(DEFAULT_TAGS);
     let outputList = [];
     defaultTagList.forEach(default_tag => {
-      if (!tags || !tags.some(tag => tag.Key === default_tag.name)) {
+      if (default_tag.name.toLocaleLowerCase() === 'name') {
+        outputList.push({
+          Key: default_tag.name,
+          Value: this.getResourceName()
+        });
+      } else if (!tags || !tags.some(tag => tag.Key === default_tag.name)) {
         outputList.push({
           Key: default_tag.name,
           Value: default_tag.value
@@ -198,6 +203,10 @@ class AutotagDefaultWorker {
 
   gePaidTagValue() {
     return this.is_paid;
+  }
+
+  getResourceName() {
+    return this.event.responseElements.functionName || 'Unset';
   }
 
   getCustomTags() {
