@@ -6,7 +6,7 @@
       "Description": "The name of the Lambda Function.",
       "Type": "String",
       "Default": "InfinopsAutoTag",
-      "AllowedValues":[
+      "AllowedValues": [
         "InfinopsAutoTag",
         "InfinopsAutoTagDev"
       ]
@@ -156,6 +156,74 @@
         "Timeout": 600
       }
     },
+    "EventBridgeRuleInvokeLambdaOnStackCreateComplete": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "EventPattern": {
+          "source": [ "aws.cloudformation" ],
+          "detail-type": [ "AWS API Call via CloudTrail" ],
+          "detail": {
+            "eventSource": [ "cloudformation.amazonaws.com" ],
+            "eventName": [ "CreateStack" ],
+            "responseElements": {
+              "stackStatus": [ "CREATE_COMPLETE" ]
+            }
+          }
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": { "Fn::GetAtt": [ "AutoTagInititialTaggingLambdaFunction", "Arn" ] },
+            "Id": "TargetFunctionV1"
+          }
+        ]
+      }
+    },
+    "EventBridgeRuleInvokeLambdaHourly": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "ScheduleExpression": "rate(1 hour)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": { "Fn::GetAtt": [ "AutoTagInititialTaggingLambdaFunction", "Arn" ] },
+            "Id": "HourlyInvocation"
+          }
+        ]
+      }
+    },
+    "LambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Ref": "AutoTagInititialTaggingLambdaFunction"
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "EventBridgeRuleInvokeLambdaOnStackCreateComplete",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "HourlyLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Ref": "AutoTagInititialTaggingLambdaFunction"
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "EventBridgeRuleInvokeLambdaHourly",
+            "Arn"
+          ]
+        }
+      }
+    },
     "AutoTagProjectTaggingLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -186,6 +254,9 @@
           "Variables": {
             "DYNAMO_TABLE": {
               "Fn::Sub": "${InfinopsProjectNameTaggingTable}"
+            },
+            "REGION": {
+              "Fn::Sub": "${AWS::Region}"
             }
           }
         }
@@ -209,6 +280,22 @@
             "Input": "{\"message\": \"Matched event\"}"
           }
         ]
+      }
+    },
+    "LambdaProjectInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Ref": "AutoTagProjectTaggingLambdaFunction"
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "EventBridgeRuleEveryHour",
+            "Arn"
+          ]
+        }
       }
     },
     "InfinopsProjectNameTaggingTable": {
@@ -287,7 +374,6 @@
         "Path": "/infinops/autotag/execution/"
       }
     },
-
     "AutoTagAdditionalExecutionRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -312,8 +398,6 @@
         "Path": "/infinops/autotag-add/execution/"
       }
     },
-
-
     "AutoTagExecutionPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
@@ -365,112 +449,112 @@
         ],
         "PolicyDocument": {
           "Version": "2012-10-17",
-          "Statement":  [
+          "Statement": [
             {
-                "Sid": "ResourceTagging",
-                "Effect": "Allow",
-                "Action": [
-                    "tag:GetResources",
-                    "tag:GetTagKeys",
-                    "tag:GetTagValues",
-                    "tag:GetComplianceSummary",
-                    "tag:TagResources",
-                    "opsworks:TagResource"
-                ],
-                "Resource": [
-                    "*"
-                ]
+              "Sid": "ResourceTagging",
+              "Effect": "Allow",
+              "Action": [
+                "tag:GetResources",
+                "tag:GetTagKeys",
+                "tag:GetTagValues",
+                "tag:GetComplianceSummary",
+                "tag:TagResources",
+                "opsworks:TagResource"
+              ],
+              "Resource": [
+                "*"
+              ]
             },
             {
-                "Sid": "GetRegionList",
-                "Effect": "Allow",
-                "Action": [
-                    "ec2:DescribeRegions"
-                ],
-                "Resource": [
-                    "*"
-                ]
+              "Sid": "GetRegionList",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:DescribeRegions"
+              ],
+              "Resource": [
+                "*"
+              ]
             },
             {
-                "Sid": "Tagging",
-                "Effect": "Allow",
-                "Action": [
-                    "mq:CreateTags",
-                    "appstream:TagResource",
-                    "cloudwatch:TagResource",
-                    "events:TagResource",
-                    "logs:TagResource",
-                    "s3:PutBucketTagging",
-                    "ec2:CreateTags",
-                    "dynamodb:TagResource",
-                    "elasticmapreduce:AddTags",
-                    "rds:AddTagsToResource",
-                    "braket:TagResource",
-                    "acm:AddTagsToCertificate",
-                    "cloud9:TagResource",
-                    "cloudformation:TagResource",
-                    "cloudformation:DescribeStacks",
-                    "cloudtrail:AddTags",
-                    "codeartifact:TagResource",
-                    "codecommit:TagResource",
-                    "codeguru-reviewer:TagResource",
-                    "codepipeline:TagResource",
-                    "cognito-identity:TagResource",
-                    "comprehend:TagResource",
-                    "config:TagResource",
-                    "dms:AddTagsToResource",
-                    "databrew:TagResource",
-                    "dataexchange:TagResource",
-                    "datapipeline:AddTags",
-                    "elasticfilesystem:TagResource",
-                    "elasticfilesystem:CreateTags",
-                    "eks:TagResource",
-                    "emr-containers:TagResource",
-                    "elasticache:AddTagsToResource",
-                    "elasticbeanstalk:AddTags",
-                    "elasticbeanstalk:UpdateTagsForResource",
-                    "docdb-elastic:TagResource",
-                    "elastic-inference:TagResource",
-                    "elasticloadbalancing:AddTags",
-                    "es:AddTags",
-                    "osis:TagResource",
-                    "aoss:TagResource",
-                    "fsx:TagResource",
-                    "forecast:TagResource",
-                    "pipes:TagResource",
-                    "frauddetector:TagResource",
-                    "glacier:AddTagsToVault",
-                    "glue:TagResource",
-                    "greengrass:TagResource",
-                    "iot:TagResource",
-                    "iotanalytics:TagResource",
-                    "iotevents:TagResource",
-                    "kms:TagResource",
-                    "kinesis:AddTagsToStream",
-                    "kinesisanalytics:TagResource",
-                    "macie2:TagResource",
-                    "lambda:TagResource",
-                    "organizations:TagResource",
-                    "qldb:TagResource",
-                    "redshift:CreateTags",
-                    "redshift-serverless:TagResource",
-                    "robomaker:TagResource",
-                    "resource-groups:Tag",
-                    "ram:TagResource",
-                    "ses:TagResource",
-                    "sns:TagResource",
-                    "route53resolver:TagResource",
-                    "sqs:TagQueue",
-                    "sagemaker:AddTags",
-                    "secretsmanager:TagResource",
-                    "states:TagResource",
-                    "storagegateway:AddTagsToResource",
-                    "workspaces:CreateTags",
-                    "ssm:AddTagsToResource"
-                ],
-                "Resource": [
-                    "*"
-                ]
+              "Sid": "Tagging",
+              "Effect": "Allow",
+              "Action": [
+                "mq:CreateTags",
+                "appstream:TagResource",
+                "cloudwatch:TagResource",
+                "events:TagResource",
+                "logs:TagResource",
+                "s3:PutBucketTagging",
+                "ec2:CreateTags",
+                "dynamodb:TagResource",
+                "elasticmapreduce:AddTags",
+                "rds:AddTagsToResource",
+                "braket:TagResource",
+                "acm:AddTagsToCertificate",
+                "cloud9:TagResource",
+                "cloudformation:TagResource",
+                "cloudformation:DescribeStacks",
+                "cloudtrail:AddTags",
+                "codeartifact:TagResource",
+                "codecommit:TagResource",
+                "codeguru-reviewer:TagResource",
+                "codepipeline:TagResource",
+                "cognito-identity:TagResource",
+                "comprehend:TagResource",
+                "config:TagResource",
+                "dms:AddTagsToResource",
+                "databrew:TagResource",
+                "dataexchange:TagResource",
+                "datapipeline:AddTags",
+                "elasticfilesystem:TagResource",
+                "elasticfilesystem:CreateTags",
+                "eks:TagResource",
+                "emr-containers:TagResource",
+                "elasticache:AddTagsToResource",
+                "elasticbeanstalk:AddTags",
+                "elasticbeanstalk:UpdateTagsForResource",
+                "docdb-elastic:TagResource",
+                "elastic-inference:TagResource",
+                "elasticloadbalancing:AddTags",
+                "es:AddTags",
+                "osis:TagResource",
+                "aoss:TagResource",
+                "fsx:TagResource",
+                "forecast:TagResource",
+                "pipes:TagResource",
+                "frauddetector:TagResource",
+                "glacier:AddTagsToVault",
+                "glue:TagResource",
+                "greengrass:TagResource",
+                "iot:TagResource",
+                "iotanalytics:TagResource",
+                "iotevents:TagResource",
+                "kms:TagResource",
+                "kinesis:AddTagsToStream",
+                "kinesisanalytics:TagResource",
+                "macie2:TagResource",
+                "lambda:TagResource",
+                "organizations:TagResource",
+                "qldb:TagResource",
+                "redshift:CreateTags",
+                "redshift-serverless:TagResource",
+                "robomaker:TagResource",
+                "resource-groups:Tag",
+                "ram:TagResource",
+                "ses:TagResource",
+                "sns:TagResource",
+                "route53resolver:TagResource",
+                "sqs:TagQueue",
+                "sagemaker:AddTags",
+                "secretsmanager:TagResource",
+                "states:TagResource",
+                "storagegateway:AddTagsToResource",
+                "workspaces:CreateTags",
+                "ssm:AddTagsToResource"
+              ],
+              "Resource": [
+                "*"
+              ]
             }
           ]
         }
@@ -489,21 +573,21 @@
         ],
         "PolicyDocument": {
           "Version": "2012-10-17",
-          "Statement":  [
+          "Statement": [
             {
-                "Sid": "DynamoDB",
-                "Effect": "Allow",
-                "Action": [
-                  "dynamodb:BatchGetItem",
-                  "dynamodb:GetItem",
-                  "dynamodb:Scan",
-                  "dynamodb:DescribeTable"
-                ],
-                "Resource": [
-                  {
-                    "Fn::Sub": "arn:aws:dynamodb:*:${AWS::AccountId}:table/${InfinopsProjectNameTaggingTable}"
-                  }
-                ]
+              "Sid": "DynamoDB",
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:DescribeTable"
+              ],
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:aws:dynamodb:*:${AWS::AccountId}:table/${InfinopsProjectNameTaggingTable}"
+                }
+              ]
             }
           ]
         }

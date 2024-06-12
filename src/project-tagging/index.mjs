@@ -50,7 +50,7 @@ async function fetchRegions() {
 
 async function getProjectList() {
     const client = new DynamoDBClient({
-        region: 'us-west-2'
+        region: process.env.REGION
     });
     const input = { // ScanInput
         TableName: process.env.DYNAMO_TABLE, // required
