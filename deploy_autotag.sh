@@ -384,6 +384,14 @@ EOF
     fi
   done
 
+  if [ "$MANAGE_RELEASE_VERSION" == 'local' ] ; then
+    echo "Invoking Lambda function..."
+
+    aws lambda invoke \
+    --function-name InfinopsAutoTagInitialTagging \
+    function-result.json
+  fi
+
   if [ "$ACTION" == "delete" ] ; then
     wait-for-stack 'Main' "$MAIN_STACK_NAME" "$MAIN_STACK_AWS_REGION"
   fi
@@ -543,6 +551,13 @@ EOF
   for REGION in $ACTIVE_REGIONS ; do
     wait-for-stack 'Collector' "$COLLECTOR_STACK_NAME" "$REGION"
   done
+
+  echo "Invoking Lambda function..."
+
+  aws lambda invoke \
+  --function-name 
+    InfinopsAutoTagInitialTagging \
+  function-result.json
 }
 
 

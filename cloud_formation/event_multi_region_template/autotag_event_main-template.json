@@ -156,17 +156,6 @@
         "Timeout": 600
       }
     },
-    "CustomAutoTagResource": {
-      "Type": "Custom::AutoTag",
-      "Properties": {
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "AutoTagInititialTaggingLambdaFunction",
-            "Arn"
-          ]
-        }
-      }
-    },
     "AutoTagProjectTaggingLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
