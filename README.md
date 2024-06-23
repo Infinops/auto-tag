@@ -1,11 +1,8 @@
 # Auto Tag
 
-[![Build Status](https://img.shields.io/travis/GorillaStack/auto-tag/master.svg?style=for-the-badge)](https://travis-ci.org/GorillaStack/auto-tag)
 [![Software License](https://img.shields.io/github/license/gorillastack/auto-tag.svg?style=for-the-badge)](/LICENSE.md)
-![GitHub last commit](https://img.shields.io/github/last-commit/gorillastack/auto-tag.svg?style=for-the-badge)
-[![Powered By: GorillaStack](https://img.shields.io/badge/powered%20by-GorillaStack-green.svg?style=for-the-badge)](https://www.gorillastack.com)
 
-This is an open-source tagging solution for AWS. Deploy AutoTag to Lambda using CloudTrail consumed through CloudWatch Events and have each of your resources tagged with the ARN of who created it. Optionally, resources can be tagged with when it was created and which AWS service invoked the request if one is provided.  It was written by [GorillaStack](http://www.gorillastack.com/).
+This is an open-source tagging solution for AWS. Deploy Infinops AutoTag to Lambda using CloudTrail consumed through CloudWatch Events and have each of your resources tagged with the ARN of who created it. Optionally, resources can be tagged with when it was created and which AWS service invoked the request if one is provided.
 
 
 ## About
@@ -56,7 +53,7 @@ This deploy script `deploy_autotag.sh` will create, delete, or update all of the
 
 The script will attempt to auto-install its own dependencies: `aws-cli`, `jq`, `npm`, `git`, `zip`
 
-The `create` command will start by creating a dedicated AutoTag S3 Bucket for storing code deployment packages in your AWS account. Then it will download or build the code package, and create both the main CloudFormation stack and the collector CloudFormation stacks. When executing the `delete` command all resources will be removed except the S3 bucket. Use the `update-release` command to update existing CloudFormation stacks to a specific release, `update-master` to update to the master branch (build required), or `update-local` to update to the local cloned git repo (build required).
+The `create` command will start by creating a dedicated AutoTag S3 Bucket for storing code deployment packages in your AWS account. Then it will download or build the code package, and create both the main CloudFormation stack and the collector CloudFormation stacks. When executing the `delete` command all resources will be removed except the S3 bucket. Use the `update-local` to update to the local cloned git repo (build required).
 
 #### Credentials
 
@@ -74,11 +71,9 @@ Before using this IAM policy replace the 2 occurrences of `my-autotag-bucket` wi
 Usage: deploy_autotag.sh [options] <command>
 
 Commands:
-    create                    Create the AutoTag infrastructure
-    delete                    Delete the AutoTag infrastructure
-    update-release            Update the AutoTag infrastructure with a specific release version
-    update-master             Update the AutoTag infrastructure with the latest from the master branch
-    update-local              Update the AutoTag infrastructure with the local source code
+    create                    Create the Infinops AutoTag infrastructure
+    delete                    Delete the Infinops AutoTag infrastructure
+    update-local              Update the Infinops AutoTag infrastructure with the local source code
 
 Options:
     -h   --help                  Show this screen
@@ -103,84 +98,32 @@ Follow these steps to prepare to run the `create` command.
 2. Pick a dedicated AutoTag `--s3-bucket` name, e.g. 'acme-autotag'
 3. Configure AWS credentials for the AWS CLI, see [Configure AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
 
+#### Setup
+
+```
+sudo apt update 
+sudo apt install awscli -y
+aws configure
+```
+
 #### Deployment Examples
-
+Firstly
 Download the latest version of `deploy_autotag.sh`, or find it in the root of the repository.
+Create the infrastructure to the local git folder's current state.
 
 ```
-curl -LO https://raw.githubusercontent.com/GorillaStack/auto-tag/master/deploy_autotag.sh
+git clone https://github.com/Infinops/auto-tag.git
+cd auto-tag
+git checkout infinops-main
+npm i
 chmod +x deploy_autotag.sh
-```
-
-Create the infrastructure with the latest release using either the `default`, `$AWS_PROFILE`, or `instance` AWS credentials profile.
-
-```bash
-./deploy_autotag.sh --region us-west-2 --s3-bucket my-autotag-bucket --release-version latest create
-```
-
-Create the infrastructure with the latest release using a named AWS credentials profile.
-
-```bash
-./deploy_autotag.sh -r us-west-2 -s3bu my-autotag-bucket --release-version latest --profile dev-acct create
-```
-
-Create the infrastructure using `$AWS_ACCESS_KEY_ID` and `$AWS_SECRET_ACCESS_KEY`.
-
-```bash
-export AWS_ACCESS_KEY_ID=XXX
-export AWS_SECRET_ACCESS_KEY=YYY
-./deploy_autotag.sh -r us-west-2 -s3bu my-autotag-bucket create
-```
-
-Create the infrastructure using a named AWS credentials profile (`--profile`), but with the S3 Bucket operations utilizing a separate AWS credential profile (`--s3-profile`). Use this feature to deploy across multiple accounts using a single S3 bucket.
-
-```bash
-./deploy_autotag.sh -r us-west-2 -s3bu my-autotag-bucket --profile dev-acct --s3-profile s3-acct create
-```
-
-Create the infrastructure with an additional custom tag with a static value, this tag will be applied globally across all of the [supported AWS resources](#supported-resource-types).
-
-```bash
-./deploy_autotag.sh -r us-west-2 -s3bu my-autotag-bucket create \
---custom-tags '{"AutoTag_ManagedBy": "Site Reliability Engineering"}'
-```
-
-Create the infrastructure with an additional event-based custom tag, any key in the CloudTrail event is valid to use and it will be applied globally across all of the [supported AWS resources](#supported-resource-types) unless the field does not exist in the CloudTrail event.
-
-```bash
-./deploy_autotag.sh -r us-west-2 -s3bu my-autotag-bucket create \
---custom-tags '{"AutoTag_UserIdentityType": "$event.userIdentity.type"}'
-```
-
-Interpolation with text in the value is supported and more than one field from the event can be rendered in a single tag value.
-
-```bash
-./deploy_autotag.sh -r us-west-2 -s3bu my-autotag-bucket create \
---custom-tags '{"AutoTag_ClientInfo": "SourceIP: $event.sourceIPAddress - UserAgent: $event.userAgent"}'
-```
-
-Update the infrastructure to the bleeding edge (master).
-
-```bash
-./deploy_autotag.sh -r us-west-2 -s3bu my-autotag-bucket update-master
-```
-
-Update the infrastructure to the latest git release.
-
-```bash
-./deploy_autotag.sh -r us-west-2 -s3bu my-autotag-bucket --release-version latest update-release
-```
-
-Update the infrastructure to a specific git release - *only works for releases >= 0.5.1*.
-
-```bash
-./deploy_autotag.sh -r us-west-2 -s3bu my-autotag-bucket --release-version 0.5.2 update-release
+./deploy_autotag.sh --region us-west-2 --s3-bucket auto-tag2 --release-version local create
 ```
 
 Update the infrastructure to the local git folder's current state.
 
 ```bash
-git clone https://github.com/GorillaStack/auto-tag.git
+git clone https://github.com/Infinops/auto-tag.git
 cd auto-tag
 ./deploy_autotag.sh -r us-west-2 -s3bu my-autotag-bucket update-local
 ```
@@ -191,13 +134,9 @@ Delete the infrastructure.
 ./deploy_autotag.sh -r us-west-2 delete
 ```
 
-### StackSet Deployment Method: Deploy using CloudFormation StackSets
-
-[CloudFormation StackSet Deployment Method](STACKSET.md)
-
 ## Supported Resource Types
 
-Currently Auto-Tag, supports the following AWS resource types:
+Currently Infinops Auto-Tag, supports the following AWS resource types:
 
 __Tags Applied__: C=Creator, T=Create Time, I=Invoked By
 
@@ -278,8 +217,11 @@ Use the following IAM policy to deny a user or role the ability to create, delet
 
 NOTE: At the time of this writing the deny tag IAM condition (aws:TagKeys) is only available for resources in EC2 and AutoScaling, see the table above for a status of each resource.
 
-## Contributing
+### FAQ
 
-If you have questions, feature requests or bugs to report, please do so on [the issues section of our github repository](https://github.com/GorillaStack/auto-tag/issues).
+```Where is the current Infinops AutoTag code ?
+https://github.com/Infinops/auto-tag.git```
 
-If you are interested in contributing, please get started by forking our GitHub repository and submit pull-requests.
+```How are resources automatically tagged ?```
+
+```The InfinopsAutoTag lambda function is responsible for automatic resource tagging. After a new resource is created, a trigger is run, which calls and passes all the necessary information to the lambda and tags the resource.```
