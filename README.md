@@ -83,7 +83,7 @@ Commands:
 Options:
     -h   --help                  Show this screen
     -r   --region                The primary AWS region where the main CloudFormation stack will be deployed
-    -p   --profile               The main AWS credential profile
+    -p   --profile               If not set, the main AWS credential profile is used
     -s3bu --s3-bucket            The S3 bucket where the code package will be uploaded
     -s3pr --s3-profile           A separate AWS credential profile to upload code packages to the S3 Bucket
     -rv   --release-version      The release version to deploy, e.g. '0.5.2' or 'latest'
@@ -131,50 +131,48 @@ chmod +x deploy_autotag.sh
 
 Currently Infinops Auto-Tag, supports the following AWS resource types:
 
-__Tags Applied__: C=Creator, T=Create Time, I=Invoked By
-
-|Technology                 |Event Name            |Tags Applied|IAM Deny Tag Support
-|---------------------------|----------------------|------------|---
-|AutoScaling Group          |CreateAutoScalingGroup|C, T, I     |Yes
-|ASG Instances w/ENI & Vol  |RunInstances          |C, T, I     |Yes
-|Data Pipeline              |CreatePipeline        |C, T, I     |No
-|DynamoDB Table             |CreateTable           |C, T, I     |No
-|CloudWatch Alarm ?         |PutMetricAlarm        |C, T, I     |?
-|CloudWatch Events Rule ?   |PutRule               |C, T, I     |?
-|CloudWatch Log Group ?     |CreateLogGroup        |C, T, I     |?
-|EBS Volume                 |CreateVolume          |C, T, I     |Yes
-|EC2 AMI w/Snapshot \*      |CreateImage           |C, T, I     |Yes
-|EC2 AMI w/Snapshot \*      |CopyImage             |C, T, I     |Yes
-|EC2 AMI \*                 |RegisterImage         |C, T, I     |Yes
-|EC2 Customer Gateway ?     |CreateCustomerGateway |C, T, I     |?
-|EC2 DHCP Options ?         |CreateDhcpOptions     |C, T, I     |?
-|EC2 Elastic IP             |AllocateAddress       |C, T, I     |Yes
-|EC2 ENI                    |CreateNetworkInterface|C, T, I     |Yes
-|EC2 Instance w/ENI & Volume|RunInstances          |C, T, I     |Yes
-|EC2 / VPC Security Group   |CreateSecurityGroup   |C, T, I     |Yes
-|EC2 Snapshot \*            |CreateSnapshot        |C, T, I     |Yes
-|EC2 Snapshot \*            |CopySnapshot          |C, T, I     |Yes
-|EC2 Snapshot \*            |ImportSnapshot        |C, T, I     |Yes
-|Elastic LB (v1 & v2)       |CreateLoadBalancer    |C, T, I     |No
-|EMR Cluster                |RunJobFlow            |C, T, I     |No
-|IAM Role                   |CreateRole            |C, T, I     |?
-|IAM User                   |CreateUser            |C, T, I     |?
-|Lambda Function ?          |CreateFunction20150331|C, T, I     |?
-|Lambda Function ?          |CreateFunction20141111|C, T, I     |?
-|OpsWorks Stack             |CreateStack           |C           |No
-|OpsWorks Clone Stack *     |CloneStack            |C           |No
-|OpsWorks Instances w/ENI & Vol|RunInstances       |C, T, I     |Yes
-|RDS Instance               |CreateDBInstance      |C, T, I     |No
-|S3 Bucket                  |CreateBucket          |C, T, I     |No
-|NAT Gateway                |CreateNatGateway      |C, T, I     |Yes
-|VPC                        |CreateVpc             |C, T, I     |Yes
-|VPC Internet Gateway       |CreateInternetGateway |C, T, I     |Yes
-|VPC Network ACL            |CreateNetworkAcl      |C, T, I     |Yes
-|VPC Peering Connection     |CreateVpcPeeringConnection|C, T, I |Yes
-|VPC Route Table            |CreateRouteTable      |C, T, I     |Yes
-|VPC Subnet                 |CreateSubnet          |C, T, I     |Yes
-|VPN Connection             |CreateVpnConnection   |C, T, I     |Yes
-|VPN Gateway ?              |CreateVpnGateway      |C, T, I     |?
+|Technology                 |
+|---------------------------|
+|AutoScaling Group          |
+|ASG Instances w/ENI & Vol  |
+|Data Pipeline              |
+|DynamoDB Table             |
+|CloudWatch Alarm           |
+|CloudWatch Events Rule     |
+|CloudWatch Log Group       |
+|EBS Volume                 |
+|EC2 AMI w/Snapshot \*      |
+|EC2 AMI w/Snapshot \*      |
+|EC2 AMI \*                 |
+|EC2 Customer Gateway       |
+|EC2 DHCP Options           |
+|EC2 Elastic IP             |
+|EC2 ENI                    |
+|EC2 Instance w/ENI & Volume|
+|EC2 / VPC Security Group   |
+|EC2 Snapshot \*            |
+|EC2 Snapshot \*            |
+|EC2 Snapshot \*            |
+|Elastic LB (v1 & v2)       |
+|EMR Cluster                |
+|IAM Role                   |
+|IAM User                   |
+|Lambda Function            |
+|Lambda Function            |
+|OpsWorks Stack             |
+|OpsWorks Clone Stack *     |
+|OpsWorks Instances w/ENI & Vol|
+|RDS Instance               |
+|S3 Bucket                  |
+|NAT Gateway                |
+|VPC                        |
+|VPC Internet Gateway       |
+|VPC Network ACL            |
+|VPC Peering Connection     |
+|VPC Route Table            |
+|VPC Subnet                 |
+|VPN Connection             |
+|VPN Gateway                |
 
 _*=not tested by the test suite_
 
@@ -228,9 +226,9 @@ Delete the infrastructure.
 
 ### FAQ
 
-```Where is the current Infinops AutoTag code ?
-https://github.com/Infinops/auto-tag.git```
+#### Where is the current Infinops AutoTag code?
+https://github.com/Infinops/auto-tag.git
 
-```How are resources automatically tagged ?```
+#### How are resources automatically tagged?
 
-```The InfinopsAutoTag lambda function is responsible for automatic resource tagging. After a new resource is created, a trigger is run, which calls and passes all the necessary information to the lambda and tags the resource.```
+The InfinopsAutoTag lambda function is responsible for automatic resource tagging. After a new resource is created, a trigger is run, which calls and passes all the necessary information to the lambda and tags the resource.
