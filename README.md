@@ -111,10 +111,8 @@ sudo apt install awscli -y
 aws configure
 ```
 
-#### Deployment Examples
-Firstly
-Download the latest version of `deploy_autotag.sh`, or find it in the root of the repository.
-Create the infrastructure to the local git folder's current state.
+#### Deploy
+Launch `deploy_autotag.sh`(you can find it in the root of the repository).
 
 ```
 git clone https://github.com/Infinops/auto-tag.git
