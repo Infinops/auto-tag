@@ -66,7 +66,7 @@ The script needs at minimum the IAM permissions described in this policy: [deplo
 Before running the script: 
 
 1. create an S3 bucket where you will store Auto Tag data.
-2. copy the contents of deploy_aim_policy.json to a new text document.
+2. copy the contents of deploy_iam_policy.json to a new text document.
 3. in the copied content, replace the 2 occurrences of `my-autotag-bucket` with the name of bucket from step 1.
 4. add the policy from your text document to the IAM user that will be used by the deployment script.
 
@@ -123,20 +123,6 @@ git checkout infinops-main
 npm i
 chmod +x deploy_autotag.sh
 ./deploy_autotag.sh --region us-west-2 --s3-bucket auto-tag2 --release-version local create
-```
-
-Update the infrastructure to the local git folder's current state.
-
-```bash
-git clone https://github.com/Infinops/auto-tag.git
-cd auto-tag
-./deploy_autotag.sh -r us-west-2 -s3bu my-autotag-bucket update-local
-```
-
-Delete the infrastructure.
-
-```bash
-./deploy_autotag.sh -r us-west-2 delete
 ```
 
 ### Script Deployment Method 2: Deploy using CloudFormation StackSets
@@ -225,6 +211,22 @@ Use the following IAM policy to deny a user or role the ability to create, delet
 ```
 
 NOTE: At the time of this writing the deny tag IAM condition (aws:TagKeys) is only available for resources in EC2 and AutoScaling, see the table above for a status of each resource.
+
+### Updating the infrastructure
+Update the infrastructure to the local git folder's current state.
+
+```bash
+git clone https://github.com/Infinops/auto-tag.git
+cd auto-tag
+./deploy_autotag.sh -r us-west-2 -s3bu my-autotag-bucket update-local
+```
+
+### Delete the infrastructure
+Delete the infrastructure.
+
+```bash
+./deploy_autotag.sh -r us-west-2 delete
+```
 
 ### FAQ
 
