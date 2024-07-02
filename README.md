@@ -63,7 +63,12 @@ The deploy script can use all of the credential providers that the AWS CLI allow
 
 The script needs at minimum the IAM permissions described in this policy: [deploy\_iam\_policy.json](deploy_iam_policy.json)
 
-Before using this IAM policy replace the 2 occurrences of `my-autotag-bucket` with the name of your actual AutoTag S3 bucket.
+Before running the script: 
+
+1. create an S3 bucket where you will store Auto Tag data.
+2. copy the contents of deploy_aim_policy.json to a new text document.
+3. in the copied content, replace the 2 occurrences of `my-autotag-bucket` with the name of bucket from step 1.
+4. add the policy from your text document to the IAM user that will be used by the deployment script.
 
 #### Commands and Options
 
