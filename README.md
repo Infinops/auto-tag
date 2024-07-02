@@ -47,7 +47,7 @@ You will need at least 1 AWS Account, and CloudTrail should be enabled.
 
 We have documented two different ways to deploy the infrastructure to an AWS account. Since there are CloudFormation stacks that need to be deployed in multiple regions we've provided a script that uses the AWS CLI to deploy everything for you. The other deployment method uses CloudFormation StackSets to deploy across multiple regions.
 
-### Script Deployment Method: Deploy through our script
+### Script Deployment Method 1: Deploy through our script
 
 This deploy script `deploy_autotag.sh` will create, delete, or update all of the AutoTag infrastructure for a single AWS account.
 
@@ -133,6 +133,10 @@ Delete the infrastructure.
 ```bash
 ./deploy_autotag.sh -r us-west-2 delete
 ```
+
+### Script Deployment Method 2: Deploy using CloudFormation StackSets
+
+[CloudFormation StackSet Deployment Method](STACKSET.md)
 
 ## Supported Resource Types
 
